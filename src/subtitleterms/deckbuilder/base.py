@@ -1,21 +1,24 @@
 import collections
 
 import genanki
+import anki.collection
 from aqt import mw
-from anki.collection import DeckManager, DeckId
 from htpy import div, h1, hr
 
 from .entrystore import EntryStore
 from .models.base import LangModel
 
 
-class LangNote(genanki.Note):
-    # GUID is generated on the term only, to allow updating deck information.
-    @property
-    def guid(self):
-        if self.fields is not None:
-            return genanki.guid_for(self.fields[0])
-        return super().guid()
+class LangNote(anki.collection.Note):
+    def __init__(
+        self,
+        collection: anki.collection.Collection,
+        model: anki.collection.NotetypeDict | anki.collection.NotetypeId,
+        fields: list[str],
+    ):
+        super().__init__(collection, model, None)
+        # GUID is generated on the term only, to allow updating deck information.
+        self.guid = genanki.guid_for(self.fields[0])
 
 
 class BaseDeck:
@@ -110,18 +113,14 @@ class BaseDeck:
         Construct the deck from confirmed terms.
         """
         collection = mw.col
-        deckmanager = DeckManager(collection)
+        deckmanager = anki.collection.DeckManager(collection)
         new_deck = deckmanager.new_deck()
         new_deck.name = f"SubtitleTerms::{self.name}"
         result = deckmanager.add_deck(new_deck)
-        new_deck_id = DeckId(result.id)
-        # new_deck = genanki.Deck(
-        #     deck_id=random.randrange(1 << 30, 1 << 31),
-        #     name=f"SubtitleTerms::{self.name}",
-        # )
+        new_deck_id = anki.collection.DeckId(result.id)
         print(f"Notes: {len(entries)}")
         for entry in entries:
-            new_note = LangNote(model=self.model, fields=list(entry))
+            new_note = LangNote(collection, self.model, list(entry))
             collection.add_note(new_note, new_deck_id)
         return new_deck
 
