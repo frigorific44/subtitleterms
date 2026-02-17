@@ -1,7 +1,8 @@
 import collections
-import random
 
 import genanki
+from aqt import mw
+from anki.collection import DeckManager, DeckId
 from htpy import div, h1, hr
 
 from .entrystore import EntryStore
@@ -108,13 +109,20 @@ class BaseDeck:
         """
         Construct the deck from confirmed terms.
         """
-        new_deck = genanki.Deck(
-            deck_id=random.randrange(1 << 30, 1 << 31), name=f"SubMem::{self.name}"
-        )
+        collection = mw.col
+        deckmanager = DeckManager(collection)
+        new_deck = deckmanager.new_deck()
+        new_deck.name = f"SubtitleTerms::{self.name}"
+        result = deckmanager.add_deck(new_deck)
+        new_deck_id = DeckId(result.id)
+        # new_deck = genanki.Deck(
+        #     deck_id=random.randrange(1 << 30, 1 << 31),
+        #     name=f"SubtitleTerms::{self.name}",
+        # )
         print(f"Notes: {len(entries)}")
         for entry in entries:
             new_note = LangNote(model=self.model, fields=list(entry))
-            new_deck.add_note(new_note)
+            collection.add_note(new_note, new_deck_id)
         return new_deck
 
     def write(self, deck):
