@@ -6,7 +6,54 @@ from aqt import mw
 from htpy import div, h1, hr
 
 from .entrystore import EntryStore
-from .models.base import LangModel
+
+lang_css = """
+.card {
+    font-family: sans-serif;
+    font-size: 24px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+hr {
+    background-color: #000000;
+    height: 2px;
+    margin: 0;
+}
+
+h1 {
+    font-size: 36px;
+}
+
+.gloss h2 {
+    font-size: 24px;
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.5em;
+    margin: 0;
+}
+
+.gloss p {
+    margin: 0;
+    margin-top: 0.5em;
+}
+
+.recognition.front .hide-rcg-f {
+    opacity: 0;
+}
+
+.recognition.back .hide-rcg-b {
+    opacity: 0;
+}
+
+.recollection.front .hide-rcl-f {
+    opacity: 0;
+}
+
+.recollection.back .hide-rcl-b {
+    opacity: 0;
+}
+"""
 
 
 class LangNote(anki.collection.Note):
@@ -29,10 +76,10 @@ class BaseDeck:
         div(".hide-rcg-f")["{{gloss}}"],
     ]
 
-    def __init__(self, model_id, name, db_initialization):
+    def __init__(self, model_id: int, name, db_initialization):
         """
         Args:
-        model_id: An integer which should be generated once for the card type and hardcoded.
+        model_id: An integer which should be generated once for the note type and hardcoded.
         name: A unique name.
         db_initialization: A function which returns a dictionary of terms to construct cards on.
         """
@@ -40,16 +87,42 @@ class BaseDeck:
         self.name = name
         self.db_initialization = db_initialization
         self._entrystore = None
+        self.model_id_cached = False
 
     @property
-    def model(self):
-        model = LangModel(
-            model_id=self.model_id,
-            name=self.name,
-            fields=self.fields,
-            template=self.template,
-        )
-        return model
+    def model(self) -> anki.collection.NotetypeId:
+        notetypeid = anki.collection.NotetypeId(self.model_id)
+        # Cached means we've already checked or added the model to the collection.
+        if self.model_id_cached:
+            notetypeid
+        modelmanager = anki.collection.ModelManager(mw.col)
+
+        # Check if the model is in the collection.
+        # TODO: Otherwise, might want to check the present model fulfills our needs.
+        # TODO: Set an option to update model.
+        if not modelmanager.get(notetypeid):
+            newmodel = modelmanager.new(self.name)
+            newmodel["id"] = notetypeid
+            for field in self.fields:
+                newfield = modelmanager.new_field(field)
+                modelmanager.add_field(newmodel, newfield)
+
+            recog_template = modelmanager.new_template("Recognition")
+            recog_template["qfmt"] = str(div(".recognition .front")[self.template])
+            recog_template["afmt"] = str(div(".recognition .back")[self.template])
+            modelmanager.add_template(newmodel, recog_template)
+
+            recol_template = modelmanager.new_template("Recollection")
+            recol_template["qfmt"] = str(div(".recollection .front")[self.template])
+            recol_template["afmt"] = str(div(".recollection .back")[self.template])
+            modelmanager.add_template(newmodel, recol_template)
+
+            newmodel["css"] = lang_css
+
+            modelmanager.add_dict(newmodel)
+
+        self.model_id_cached = True
+        return notetypeid
 
     @property
     def Entry(self):
