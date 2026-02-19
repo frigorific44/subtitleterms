@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'src/subtitleterms/ui/importdialog.ui'
+# Form implementation generated from reading ui file 'importdialog.ui'
 #
 # Created by: PyQt6 UI code generator 6.10.2
 #
@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_ImportDialog(object):
     def setupUi(self, ImportDialog):
         ImportDialog.setObjectName("ImportDialog")
-        ImportDialog.resize(400, 271)
+        ImportDialog.resize(400, 330)
         self.verticalLayout = QtWidgets.QVBoxLayout(ImportDialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.fileLabel = QtWidgets.QLabel(parent=ImportDialog)
@@ -35,14 +35,24 @@ class Ui_ImportDialog(object):
         self.verticalLayout.addWidget(self.nameLineEdit)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout.addItem(spacerItem)
+        self.subtitleLabel = QtWidgets.QLabel(parent=ImportDialog)
+        self.subtitleLabel.setEnabled(False)
+        self.subtitleLabel.setObjectName("subtitleLabel")
+        self.verticalLayout.addWidget(self.subtitleLabel)
+        self.subtitleComboBox = QtWidgets.QComboBox(parent=ImportDialog)
+        self.subtitleComboBox.setEnabled(False)
+        self.subtitleComboBox.setObjectName("subtitleComboBox")
+        self.verticalLayout.addWidget(self.subtitleComboBox)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.verticalLayout.addItem(spacerItem1)
         self.dictionaryLabel = QtWidgets.QLabel(parent=ImportDialog)
         self.dictionaryLabel.setObjectName("dictionaryLabel")
         self.verticalLayout.addWidget(self.dictionaryLabel)
         self.dictionaryComboBox = QtWidgets.QComboBox(parent=ImportDialog)
         self.dictionaryComboBox.setObjectName("dictionaryComboBox")
         self.verticalLayout.addWidget(self.dictionaryComboBox)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-        self.verticalLayout.addItem(spacerItem1)
+        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.verticalLayout.addItem(spacerItem2)
         self.buttonBox = QtWidgets.QDialogButtonBox(parent=ImportDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
@@ -61,4 +71,5 @@ class Ui_ImportDialog(object):
         self.fileLabel.setText(_translate("ImportDialog", "File"))
         self.filePushButton.setText(_translate("ImportDialog", "Browse"))
         self.deckLabel.setText(_translate("ImportDialog", "Deck Name"))
+        self.subtitleLabel.setText(_translate("ImportDialog", "Subtitle"))
         self.dictionaryLabel.setText(_translate("ImportDialog", "Dictionary"))
