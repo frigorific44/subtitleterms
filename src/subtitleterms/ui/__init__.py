@@ -74,7 +74,7 @@ class ImportDialog(QDialog, Ui_ImportDialog):
             op.without_collection().run_in_background()
 
     def getSettings(self) -> ImportSettings | None:
-        if self.result() == QDialog.rejected:
+        if not self.result():
             return None
         # File Path
         if not self.file_path:
