@@ -30,7 +30,6 @@ class ImportDialog(QDialog, Ui_ImportDialog):
         QDialog.__init__(self, mw)
         self.setupUi(self)
         self.filePushButton.clicked.connect(self.onBrowse)
-        # TODO: Create validator.
         self.fileLineEdit.editingFinished.connect(self.onFileEditFinish)
         self.dictionaryComboBox.addItem("-")
         self.dictionaryComboBox.addItems(decks.keys())
@@ -47,7 +46,11 @@ class ImportDialog(QDialog, Ui_ImportDialog):
 
     def onFileEditFinish(self):
         new_file_path = pathlib.Path(self.fileLineEdit.text())
-        if self.file_path == new_file_path:
+        if (
+            self.file_path == new_file_path
+            or not new_file_path.exists()
+            or not new_file_path.is_file()
+        ):
             return
         self.file_path = new_file_path
 
@@ -78,10 +81,7 @@ class ImportDialog(QDialog, Ui_ImportDialog):
             return None
         # File Path
         if not self.file_path:
-            showWarning("Please select a file.")
-            return None
-        if not self.file_path.exists():
-            showWarning("File does not exist.")
+            showWarning("Please select a valid file.")
             return None
         # Sub Choice
         sub_choice = self.subtitleComboBox.currentIndex()
