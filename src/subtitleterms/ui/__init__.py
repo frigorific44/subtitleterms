@@ -36,6 +36,7 @@ class ImportDialog(QDialog, Ui_ImportDialog):
         self.exec()
 
     def onBrowse(self):
+        """Handles a browse call with a file dialog and update to fileLineEdit."""
         fileDialog = QFileDialog(self)
         fileDialog.setFileMode(QFileDialog.FileMode.ExistingFile)
         if fileDialog.exec():
@@ -45,6 +46,7 @@ class ImportDialog(QDialog, Ui_ImportDialog):
                 self.onFileEditFinish()
 
     def onFileEditFinish(self):
+        """Handles a significant update to fileLineEdit."""
         new_file_path = pathlib.Path(self.fileLineEdit.text())
         if (
             self.file_path == new_file_path
@@ -54,6 +56,10 @@ class ImportDialog(QDialog, Ui_ImportDialog):
             return
         self.file_path = new_file_path
 
+        # So long as there's no current name, use the file name stem.
+        if not self.nameLineEdit.text():
+            self.nameLineEdit.setText(self.file_path.stem)
+        # If the file has a video extension, asynchronously get its subtitle streams.
         file_extension = self.file_path.suffix[1:]
         if file_extension not in videoextensions.extensions:
             self.subtitleComboBox.setEnabled(False)
@@ -77,6 +83,8 @@ class ImportDialog(QDialog, Ui_ImportDialog):
             op.without_collection().run_in_background()
 
     def getSettings(self) -> ImportSettings | None:
+        """Get the import settings of the dialog's form."""
+        # Cancel
         if not self.result():
             return None
         # File Path
