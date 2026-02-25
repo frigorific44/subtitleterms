@@ -1,3 +1,4 @@
+from .deckbuilder.base import BaseDeck
 import functools
 import gzip
 import requests
@@ -87,7 +88,7 @@ def reconcile_entries(Entry, entries):
     return Entry(*equal_entry)
 
 
-deck_tuples = [
+builder_tuples: list[tuple[str, BaseDeck]] = [
     (
         "Chinese (Simplified) to English",
         ZH_Deck(1790468694, "ZH_SC_2_EN", lambda x: initialize(x, "simplified")),
@@ -97,4 +98,6 @@ deck_tuples = [
         ZH_Deck(1743404006, "ZH_TC_2_EN", lambda x: initialize(x, "traditional")),
     ),
 ]
-decks = {dt[0]: dt[1] for dt in sorted(deck_tuples, key=lambda deck: deck[0])}
+builders: dict[str, BaseDeck] = {
+    dt[0]: dt[1] for dt in sorted(builder_tuples, key=lambda deck: deck[0])
+}

@@ -7,7 +7,7 @@ from aqt.operations import QueryOp
 from aqt.qt import QDialog, QFileDialog
 from aqt.utils import showWarning
 
-from ..deck import decks
+from ..deck import builders
 from . import videoextensions
 from ..ext import get_subtitle_streams
 from .importdialog import Ui_ImportDialog
@@ -32,7 +32,7 @@ class ImportDialog(QDialog, Ui_ImportDialog):
         self.filePushButton.clicked.connect(self.onBrowse)
         self.fileLineEdit.editingFinished.connect(self.onFileEditFinish)
         self.dictionaryComboBox.addItem("-")
-        self.dictionaryComboBox.addItems(decks.keys())
+        self.dictionaryComboBox.addItems(builders.keys())
         self.exec()
 
     def onBrowse(self):
@@ -98,7 +98,7 @@ class ImportDialog(QDialog, Ui_ImportDialog):
             return None
         # Dict Choice
         dict_choice = self.dictionaryComboBox.currentText()
-        if dict_choice not in decks:
+        if dict_choice not in builders:
             showWarning("Please select a dictionary.")
             return None
         # Deck Name

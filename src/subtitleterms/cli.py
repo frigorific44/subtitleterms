@@ -90,9 +90,9 @@ def dec_command(parser, args):
             input_path, list_prompt(list(ext.get_subtitle_streams(input_path).values()))
         )
     subs = ext.parse_srt(sub_text)
-    deck_choices = list(deck.decks.keys())
+    deck_choices = list(deck.builders.keys())
     deck_choice = list_prompt(deck_choices)
-    deck.decks[deck_choices[deck_choice]].build(subs)
+    deck.builders[deck_choices[deck_choice]].build(subs)
 
 
 if __name__ == "__main__":
