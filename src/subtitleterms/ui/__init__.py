@@ -15,7 +15,18 @@ from .importdialog import Ui_ImportDialog
 
 @dataclass
 class ImportSettings:
-    """Class for storing import settings."""
+    """
+    Class for storing import settings.
+
+    :param path:
+    :type path: pathlib.Path
+    :param subtitle_stream: The subtitle stream index, or -1 if none selected.
+    :type subtitle_stream: int
+    :param deck:
+    :type deck: str
+    :param name:
+    :type name: str
+    """
 
     path: pathlib.Path
     subtitle_stream: int
