@@ -1,8 +1,9 @@
 import collections
 
-import genanki
 import anki.collection
+import genanki
 from aqt import mw
+from aqt.operations import CollectionOp
 from htpy import div, h1, hr
 
 from .entrystore import EntryStore
@@ -141,10 +142,18 @@ class BaseDeck:
         """
         From a list of subtitle lines, constructs a deck.
         """
-        segments = self.segment(subs)
-        entries = self.lookup(segments)
-        deck = self.gather(entries)
-        self.write(deck)
+
+        def buildOp(col: anki.collection.Collection):
+            undo_entry = col.add_custom_undo_entry("SubtitleTerms: Import")
+
+            segments = self.segment(subs)
+            entries = self.lookup(segments)
+            self.gather(col, entries)
+
+            return col.merge_undo_entries(undo_entry)
+
+        op = CollectionOp(parent=mw, op=buildOp)
+        op.run_in_background()
 
     def segment(self, subs: list[str]) -> list[str]:
         """
@@ -181,21 +190,20 @@ class BaseDeck:
         """
         return []
 
-    def gather(self, entries):
+    def gather(self, collection: anki.collection.Collection, entries):
         """
         Construct the deck from confirmed terms.
         """
-        collection = mw.col
-        deckmanager = anki.collection.DeckManager(collection)
-        new_deck = deckmanager.new_deck()
+        new_deck = collection.decks.new_deck()
         new_deck.name = f"SubtitleTerms::{self.name}"
-        result = deckmanager.add_deck(new_deck)
+        result = collection.decks.add_deck(new_deck)
         new_deck_id = anki.collection.DeckId(result.id)
         print(f"Notes: {len(entries)}")
-        for entry in entries:
-            new_note = LangNote(collection, self.model, list(entry))
-            collection.add_note(new_note, new_deck_id)
+        notes = [
+            anki.collection.AddNoteRequest(
+                LangNote(collection, self.model, list(entry)), new_deck_id
+            )
+            for entry in entries
+        ]
+        collection.add_notes(notes)
         return new_deck
-
-    def write(self, deck):
-        genanki.Package(deck).write_to_file("output.apkg")
