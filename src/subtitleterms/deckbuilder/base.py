@@ -138,7 +138,7 @@ class BaseDeck:
             self._entrystore = EntryStore(self.Entry, self.db_initialization)
         return self._entrystore.db
 
-    def build(self, subs: list[str]):
+    def build(self, subs: list[str], deckname: str):
         """
         From a list of subtitle lines, constructs a deck.
         """
@@ -148,7 +148,7 @@ class BaseDeck:
 
             segments = self.segment(subs)
             entries = self.lookup(segments)
-            self.gather(col, entries)
+            self.gather(col, entries, deckname)
 
             return col.merge_undo_entries(undo_entry)
 
@@ -190,12 +190,12 @@ class BaseDeck:
         """
         return []
 
-    def gather(self, collection: anki.collection.Collection, entries):
+    def gather(self, collection: anki.collection.Collection, entries, deckname: str):
         """
         Construct the deck from confirmed terms.
         """
         new_deck = collection.decks.new_deck()
-        new_deck.name = f"SubtitleTerms::{self.name}"
+        new_deck.name = f"SubtitleTerms::{deckname}"
         result = collection.decks.add_deck(new_deck)
         new_deck_id = anki.collection.DeckId(result.id)
         print(f"Notes: {len(entries)}")

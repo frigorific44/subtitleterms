@@ -13,6 +13,8 @@ def importDeck() -> None:
         return
     builder = builders[import_settings.deck]
 
+    deckname = import_settings.name
+
     def getSubs(col: Collection, import_settings: ImportSettings):
         if import_settings.subtitle_stream > -1:
             sub_text = ext(import_settings.path, import_settings.subtitle_stream)
@@ -28,7 +30,7 @@ def importDeck() -> None:
         return subs
 
     def onSubsSuccess(subs: list[str]):
-        builder.build(subs)
+        builder.build(subs, deckname)
 
     op = QueryOp(
         parent=mw, op=lambda col: getSubs(col, import_settings), success=onSubsSuccess
