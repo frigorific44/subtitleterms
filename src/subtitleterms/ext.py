@@ -3,11 +3,14 @@ import re
 import subprocess
 import shutil
 import pathlib
+from aqt.addons import AddonManager
+
+logger = AddonManager.get_logger("subtitleterms")
 
 
 def get_subtitle_streams(input_path: pathlib.Path) -> dict:
     if not shutil.which("ffprobe"):
-        print(
+        logger.error(
             "FFmpeg:ffprobe is not found in PATH. Install FFmpeg or use a separate utility to extract subtitles."
         )
     probe_args = [
@@ -35,7 +38,7 @@ def get_subtitle_streams(input_path: pathlib.Path) -> dict:
 
 def ext(input_path: pathlib.Path, stream_n: int) -> str:
     if not shutil.which("ffmpeg"):
-        print(
+        logger.error(
             "FFmpeg is not found in PATH. Install FFmpeg or use a separate utility to extract subtitles."
         )
     ff_args = [
@@ -68,12 +71,10 @@ def parse_srt(sub_text: str) -> list[str]:
         # Should be strictly increasing starting from 1,
         # but we'll be generous so as to not lose data.
         if not lines[0].strip().isdigit():
-            print("Malformed subtitle, index missing:")
-            print(lines)
+            logger.warning(f"Malformed subtitle, index missing: {lines}")
             continue
         if not timestammp_exp.fullmatch(lines[1].strip()):
-            print("Malformed subtitle, incorrect timestamp:")
-            print(lines)
+            logger.warning(f"Malformed subtitle, incorrect timestamp: {lines}")
         else:
             subtitle_lines.extend(lines[2:])
     return subtitle_lines

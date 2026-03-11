@@ -1,3 +1,4 @@
+from aqt.addons import AddonManager
 from .deckbuilder.base import BaseDeck
 import functools
 import gzip
@@ -7,6 +8,8 @@ import re
 from collections import defaultdict
 
 from htpy import div, h2, p, span
+
+logger = AddonManager.get_logger("subtitleterms")
 
 
 def initialize(Entry, char_set):
@@ -41,8 +44,8 @@ def initialize(Entry, char_set):
             entry = Entry(term=key_char, pinyin=pinyin, gloss=gloss)
             ce_dict[key_char].append(entry)
         except IndexError as err:
-            print(f"Unhandled line: {line}")
-            print(err)
+            logger.error(f"Unhandled line: {line}")
+            logger.error(err)
     return {k: reconcile_entries(Entry, v) for k, v in ce_dict.items()}
 
 
@@ -55,11 +58,11 @@ def tone_numbers_to_marks(s: str) -> str:
     def pinyin_repl(match: re.Match) -> str:
         syllable = match[0]
         if len(syllable) < 1 or not syllable[-1].isdigit():
-            print(syllable)
+            logger.debug(syllable)
             return syllable
         tone_num = int(syllable[-1]) - 1
         if tone_num < 0 or tone_num >= len(tones):
-            print(syllable)
+            logger.debug(syllable)
             return syllable
         tone = tones[tone_num]
         syllable = syllable[:-1]

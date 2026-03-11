@@ -1,7 +1,10 @@
 import jieba.posseg
+from aqt.addons import AddonManager
 from htpy import div, h1, hr, rt, ruby
 
 from .base import BaseDeck
+
+logger = AddonManager.get_logger("subtitleterms")
 
 
 class ZH_Deck(BaseDeck):
@@ -22,7 +25,7 @@ class ZH_Deck(BaseDeck):
                 if tag not in set(["x"]) and not term.isdigit():
                     if term not in word_set:
                         word_set[term] = True
-        print(f"Segments: {len(word_set)}")
+        logger.debug(f"Segments: {len(word_set)}")
         return list(word_set)
 
     def lookup_fallback(self, term: str):

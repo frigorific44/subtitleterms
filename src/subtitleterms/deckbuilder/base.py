@@ -3,6 +3,7 @@ import collections
 import anki.collection
 import genanki
 from aqt import mw
+from aqt.addons import AddonManager
 from aqt.operations import CollectionOp
 from htpy import div, h1, hr
 
@@ -56,6 +57,8 @@ h1 {
 }
 """
 
+logger = AddonManager.get_logger("subtitleterms")
+
 
 class LangNote(anki.collection.Note):
     def __init__(
@@ -65,6 +68,7 @@ class LangNote(anki.collection.Note):
         fields: list[str],
     ):
         super().__init__(collection, model, None)
+        self.fields = fields
         # GUID is generated on the term only, to allow updating deck information.
         self.guid = genanki.guid_for(self.fields[0])
 
@@ -148,6 +152,8 @@ class BaseDeck:
 
             segments = self.segment(subs)
             entries = self.lookup(segments)
+            for entry in entries:
+                logger.debug(entry._asdict())
             self.gather(col, entries, deckname)
 
             return col.merge_undo_entries(undo_entry)
@@ -198,7 +204,7 @@ class BaseDeck:
         new_deck.name = f"SubtitleTerms::{deckname}"
         result = collection.decks.add_deck(new_deck)
         new_deck_id = anki.collection.DeckId(result.id)
-        print(f"Notes: {len(entries)}")
+        logger.info(f"Notes: {len(entries)}")
         notes = [
             anki.collection.AddNoteRequest(
                 LangNote(collection, self.model, list(entry)), new_deck_id
