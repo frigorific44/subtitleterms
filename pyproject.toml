@@ -16,9 +16,6 @@ dependencies = [
 [dependency-groups]
 dev = ["hatchling>=1.28.0", "pytest>=9.0.2"]
 
-[project.scripts]
-subtitleterms = "subtitleterms.cli:cli"
-
 [build-system]
 requires = ["hatchling", "hatch-zipped-directory"]
 build-backend = "hatchling.build"
