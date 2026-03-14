@@ -25,10 +25,10 @@ class ZH_Deck(BaseDeck):
                 if tag not in set(["x"]) and not term.isdigit():
                     if term not in word_set:
                         word_set[term] = True
-        logger.debug(f"Segments: {len(word_set)}")
         return list(word_set)
 
     def lookup_fallback(self, term: str):
+        # TODO: Fallback for partial matches.
         # Calculate combinations of substrings contained in the dictionary.
         def defined_combinations(runes: str) -> list[list[str]]:
             if runes == "":

@@ -92,22 +92,18 @@ class BaseDeck:
         self.name = name
         self.db_initialization = db_initialization
         self._entrystore = None
-        self.model_id_cached = False
 
-    @property
-    def model(self) -> anki.collection.NotetypeId:
-        notetypeid = anki.collection.NotetypeId(self.model_id)
-        # Cached means we've already checked or added the model to the collection.
-        if self.model_id_cached:
-            notetypeid
-        modelmanager = anki.collection.ModelManager(mw.col)
+    def model(
+        self, collection: anki.collection.Collection
+    ) -> anki.collection.NotetypeId:
+        modelmanager = collection.models
+        notetypeid = modelmanager.id_for_name(self.name)
 
         # Check if the model is in the collection.
         # TODO: Otherwise, might want to check the present model fulfills our needs.
         # TODO: Set an option to update model.
-        if not modelmanager.get(notetypeid):
+        if not notetypeid:
             newmodel = modelmanager.new(self.name)
-            newmodel["id"] = notetypeid
             for field in self.fields:
                 newfield = modelmanager.new_field(field)
                 modelmanager.add_field(newmodel, newfield)
@@ -124,9 +120,8 @@ class BaseDeck:
 
             newmodel["css"] = lang_css
 
-            modelmanager.add_dict(newmodel)
+            notetypeid = anki.collection.NotetypeId(modelmanager.add_dict(newmodel).id)
 
-        self.model_id_cached = True
         return notetypeid
 
     @property
@@ -150,8 +145,11 @@ class BaseDeck:
         def buildOp(col: anki.collection.Collection):
             undo_entry = col.add_custom_undo_entry("SubtitleTerms: Import")
 
+            logger.info(f"Subtitle count = {len(subs)}")
             segments = self.segment(subs)
+            logger.info(f"Segment count = {len(segments)}")
             entries = self.lookup(segments)
+            logger.info(f"Entry count = {len(entries)}")
             for entry in entries:
                 logger.debug(entry._asdict())
             self.gather(col, entries, deckname)
@@ -200,14 +198,16 @@ class BaseDeck:
         """
         Construct the deck from confirmed terms.
         """
+        model_id = self.model(collection)
         new_deck = collection.decks.new_deck()
-        new_deck.name = f"SubtitleTerms::{deckname}"
+        new_deck.name = f"{deckname}"
         result = collection.decks.add_deck(new_deck)
         new_deck_id = anki.collection.DeckId(result.id)
-        logger.info(f"Notes: {len(entries)}")
+        logger.info(f"Deck added: {new_deck_id}")
+        logger.info(f"Model added: {model_id}")
         notes = [
             anki.collection.AddNoteRequest(
-                LangNote(collection, self.model, list(entry)), new_deck_id
+                LangNote(collection, model_id, list(entry)), new_deck_id
             )
             for entry in entries
         ]
