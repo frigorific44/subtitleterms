@@ -81,29 +81,32 @@ class BaseDeck:
         div(".hide-rcg-f")["{{gloss}}"],
     ]
 
-    def __init__(self, model_id: int, name, db_initialization):
+    def __init__(self, name, db_initialization):
         """
         Args:
         model_id: An integer which should be generated once for the note type and hardcoded.
         name: A unique name.
         db_initialization: A function which returns a dictionary of terms to construct cards on.
         """
-        self.model_id = model_id
         self.name = name
         self.db_initialization = db_initialization
         self._entrystore = None
+
+    @property
+    def modelname(self) -> str:
+        return f"SubtitleTerms {self.name}"
 
     def model(
         self, collection: anki.collection.Collection
     ) -> anki.collection.NotetypeId:
         modelmanager = collection.models
-        notetypeid = modelmanager.id_for_name(self.name)
+        notetypeid = modelmanager.id_for_name(self.modelname)
 
         # Check if the model is in the collection.
         # TODO: Otherwise, might want to check the present model fulfills our needs.
         # TODO: Set an option to update model.
         if not notetypeid:
-            newmodel = modelmanager.new(self.name)
+            newmodel = modelmanager.new(self.modelname)
             for field in self.fields:
                 newfield = modelmanager.new_field(field)
                 modelmanager.add_field(newmodel, newfield)
@@ -121,6 +124,7 @@ class BaseDeck:
             newmodel["css"] = lang_css
 
             notetypeid = anki.collection.NotetypeId(modelmanager.add_dict(newmodel).id)
+            logger.debug(f"Model '{self.modelname}' added: {notetypeid}")
 
         return notetypeid
 
@@ -145,13 +149,13 @@ class BaseDeck:
         def buildOp(col: anki.collection.Collection):
             undo_entry = col.add_custom_undo_entry("SubtitleTerms: Import")
 
-            logger.info(f"Subtitle count = {len(subs)}")
+            logger.debug(f"Subtitle count = {len(subs)}")
             segments = self.segment(subs)
-            logger.info(f"Segment count = {len(segments)}")
+            logger.debug(f"Segment count = {len(segments)}")
             entries = self.lookup(segments)
-            logger.info(f"Entry count = {len(entries)}")
+            logger.debug(f"Entry count = {len(entries)}")
             for entry in entries:
-                logger.debug(entry._asdict())
+                logger.log(9, entry._asdict())
             self.gather(col, entries, deckname)
 
             return col.merge_undo_entries(undo_entry)
@@ -204,7 +208,6 @@ class BaseDeck:
         result = collection.decks.add_deck(new_deck)
         new_deck_id = anki.collection.DeckId(result.id)
         logger.info(f"Deck added: {new_deck_id}")
-        logger.info(f"Model added: {model_id}")
         notes = [
             anki.collection.AddNoteRequest(
                 LangNote(collection, model_id, list(entry)), new_deck_id
