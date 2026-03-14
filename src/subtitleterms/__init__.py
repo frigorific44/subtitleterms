@@ -15,7 +15,9 @@ from .subimport import importDeck  # noqa: E402
 # Configure logger.
 logger = AddonManager.get_logger("subtitleterms")
 LOGLEVEL = os.environ.get("SUBTERMS_LOGLEVEL", "").upper()
-if LOGLEVEL:
+if LOGLEVEL.isdigit():
+    logger.setLevel(int(LOGLEVEL))
+elif LOGLEVEL:
     logger.setLevel(LOGLEVEL)
 logger.info(f"SubtitleTerms log level is {logger.getEffectiveLevel()}")
 
