@@ -1,4 +1,5 @@
 import collections
+import pathlib
 
 import anki.collection
 import genanki
@@ -9,55 +10,14 @@ from htpy import div, h1, hr
 
 from .entrystore import EntryStore
 
-lang_css = """
-.card {
-    font-family: sans-serif;
-    font-size: 24px;
-    line-height: 1.5;
-    text-align: center;
-}
-
-hr {
-    background-color: #000000;
-    height: 2px;
-    margin: 0;
-}
-
-h1 {
-    font-size: 36px;
-}
-
-.gloss h2 {
-    font-size: 24px;
-    text-decoration-line: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.5em;
-    margin: 0;
-}
-
-.gloss p {
-    margin: 0;
-    margin-top: 0.5em;
-}
-
-.recognition.front .hide-rcg-f {
-    opacity: 0;
-}
-
-.recognition.back .hide-rcg-b {
-    opacity: 0;
-}
-
-.recollection.front .hide-rcl-f {
-    opacity: 0;
-}
-
-.recollection.back .hide-rcl-b {
-    opacity: 0;
-}
-"""
 
 logger = AddonManager.get_logger("subtitleterms")
+
+
+def get_css(file_name: str) -> str:
+    dir_path = pathlib.Path(__file__).parent.joinpath("css")
+    file_path = dir_path.joinpath(file_name)
+    return file_path.read_text(encoding="utf-8")
 
 
 class LangNote(anki.collection.Note):
@@ -121,7 +81,7 @@ class BaseDeck:
             recol_template["afmt"] = str(div(".recollection .back")[self.template])
             modelmanager.add_template(newmodel, recol_template)
 
-            newmodel["css"] = lang_css
+            newmodel["css"] = get_css("all_lang.css")
 
             notetypeid = anki.collection.NotetypeId(modelmanager.add_dict(newmodel).id)
             logger.debug(f"Model '{self.modelname}' added: {notetypeid}")
