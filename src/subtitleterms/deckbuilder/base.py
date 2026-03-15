@@ -174,5 +174,17 @@ class BaseDeck:
             for note in notes
             if not note.fields_check()
         ]
+
+        result_msg = f"{len(requests)} note"
+        result_msg += "s" if len(requests) > 1 else ""
+        result_msg += " added"
+        skipped = len(notes) - len(requests)
+        if skipped > 0:
+            result_msg += f", {skipped} note"
+            result_msg += "s" if skipped > 1 else ""
+            result_msg += " skipped"
+        result_msg += "."
+        logger.info(result_msg)
+
         collection.add_notes(requests)
         return new_deck
