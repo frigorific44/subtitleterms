@@ -168,11 +168,11 @@ class BaseDeck:
         result = collection.decks.add_deck(new_deck)
         new_deck_id = anki.collection.DeckId(result.id)
         logger.info(f"Deck added: {new_deck_id}")
-        notes = [
-            anki.collection.AddNoteRequest(
-                LangNote(collection, model_id, list(entry)), new_deck_id
-            )
-            for entry in entries
+        notes = [LangNote(collection, model_id, list(entry)) for entry in entries]
+        requests = [
+            anki.collection.AddNoteRequest(note, new_deck_id)
+            for note in notes
+            if not note.fields_check()
         ]
-        collection.add_notes(notes)
+        collection.add_notes(requests)
         return new_deck
