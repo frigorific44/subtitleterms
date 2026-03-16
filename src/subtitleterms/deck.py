@@ -94,11 +94,11 @@ def reconcile_entries(Entry, entries):
 builder_tuples: list[tuple[str, BaseDeck]] = [
     (
         "Chinese (Simplified) to English",
-        ZH_Deck("ZH_SC_2_EN", lambda x: initialize(x, "simplified")),
+        ZH_Deck("ZH_SC", "EN", lambda x: initialize(x, "simplified")),
     ),
     (
         "Chinese (Traditional) to English",
-        ZH_Deck("ZH_TC_2_EN", lambda x: initialize(x, "traditional")),
+        ZH_Deck("ZH_TC", "EN", lambda x: initialize(x, "traditional")),
     ),
 ]
 builders: dict[str, BaseDeck] = {

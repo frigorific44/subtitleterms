@@ -41,16 +41,21 @@ class BaseDeck:
         div(".hide-rcg-f")["{{gloss}}"],
     ]
 
-    def __init__(self, name, db_initialization):
+    def __init__(self, lang_from, lang_to, db_initialization):
         """
         Args:
         model_id: An integer which should be generated once for the note type and hardcoded.
         name: A unique name.
         db_initialization: A function which returns a dictionary of terms to construct cards on.
         """
-        self.name = name
+        self.lang_from = lang_from
+        self.lang_to = lang_to
         self.db_initialization = db_initialization
         self._entrystore = None
+
+    @property
+    def name(self) -> str:
+        return f"{self.lang_from}_2_{self.lang_to}"
 
     @property
     def modelname(self) -> str:
