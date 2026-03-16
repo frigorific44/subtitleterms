@@ -37,3 +37,21 @@ def importDeck() -> None:
     )
     op.with_progress().without_collection().run_in_background()
     # builder.build(subs)
+
+
+def updateModels() -> None:
+    """
+    In normal use, if a model has already been added, it remains untouched.
+    This function is a manual intervention for the user to update their models
+    in case the addon's defined models were updated, or if the user wishes to
+    reset changes they had made.
+    """
+    pass
+
+
+def updateNotes() -> None:
+    """
+    For the user to manually update and reset currently used SubtitleTerms notes,
+    and their respective source dictionaries.
+    """
+    pass

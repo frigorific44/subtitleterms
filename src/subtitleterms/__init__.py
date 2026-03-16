@@ -2,15 +2,15 @@ import os
 import sys
 
 from aqt import mw
-from aqt.qt import QAction
 from aqt.addons import AddonManager
+from aqt.qt import QAction
 from aqt.utils import qconnect
 
 parent_dir = os.path.abspath(os.path.dirname(__file__))
 vendor_dir = os.path.join(parent_dir, "vendor")
 sys.path.append(vendor_dir)
 
-from .subimport import importDeck  # noqa: E402
+from .actions import importDeck, updateModels, updateNotes  # noqa: E402
 
 # Configure logger.
 logger = AddonManager.get_logger("subtitleterms")
@@ -21,7 +21,15 @@ elif LOGLEVEL:
     logger.setLevel(LOGLEVEL)
 logger.info(f"SubtitleTerms log level is {logger.getEffectiveLevel()}")
 
-# Create a menu action.
-action = QAction("SubtitleTerms: Import", mw)
-qconnect(action.triggered, importDeck)
-mw.form.menuCol.insertAction(mw.form.menuCol.actions()[-1], action)
+# Create menu actions.
+actionImport = QAction("SubtitleTerms: Import", mw)
+qconnect(actionImport.triggered, importDeck)
+mw.form.menuCol.insertAction(mw.form.menuCol.actions()[-1], actionImport)
+
+actionModels = QAction("SubtitleTerms: Update Note Types", mw)
+qconnect(actionModels.triggered, updateModels)
+mw.form.menuTools.addAction(actionModels)
+
+actionNotes = QAction("SubtitleTerms: Update Notes")
+qconnect(actionNotes.triggered, updateNotes)
+mw.form.menuTools.addAction(actionNotes)
