@@ -2,7 +2,7 @@ from anki.collection import Collection
 from aqt import mw
 from aqt.operations import QueryOp
 
-from .deck import builders
+from .builders import builders
 from .ext import ext, parse_srt
 from .ui import ImportDialog, ImportSettings
 
