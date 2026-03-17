@@ -7,7 +7,7 @@ from aqt.operations import QueryOp
 from aqt.qt import QDialog, QFileDialog
 from aqt.utils import showWarning
 
-from ..deck import builders
+from ..builders import builders
 from . import videoextensions
 from ..ext import get_subtitle_streams
 from .importdialog import Ui_ImportDialog

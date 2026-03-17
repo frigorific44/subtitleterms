@@ -1,6 +1,12 @@
+import functools
+import gzip
+import re
+from collections import defaultdict
+
 import jieba.posseg
+import requests
 from aqt.addons import AddonManager
-from htpy import div, h1, hr, rt, ruby
+from htpy import div, h1, h2, hr, p, rt, ruby, span
 
 from .base import BaseDeck
 
@@ -59,3 +65,82 @@ class ZH_Deck(BaseDeck):
             for s in combination
         ]
         return best_combinations_flat
+
+
+def zh_initialize(Entry, char_set):
+    # Download dictionary text into string
+    req = requests.get(
+        "https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz"
+    )
+    dict_text = gzip.decompress(req.content).decode(encoding="utf-8")
+    # Entries are not one-to-one with the representative character,
+    # so we deal with that first.
+    ce_dict = defaultdict(list)
+    for line in dict_text.split("\n"):
+        try:
+            if line.startswith("#"):
+                continue
+            stripped_line = line.strip()
+            toned_line = tone_numbers_to_marks(stripped_line)
+            sense_boundary = toned_line.strip("/").split("/")
+            senses = sense_boundary[1:]
+            pinyin_boundary = sense_boundary[0].split("[")
+            pinyin = pinyin_boundary[-1].rstrip("] ")
+            term_boundary = pinyin_boundary[0].split()
+            traditional = term_boundary[0]
+            simplified = term_boundary[1]
+            if char_set == "traditional":
+                key_char = traditional
+                other_char = simplified
+            else:
+                key_char = simplified
+                other_char = traditional
+            gloss = [h2[span[other_char], span[pinyin]], (p[sense] for sense in senses)]
+            entry = Entry(term=key_char, pinyin=pinyin, gloss=gloss)
+            ce_dict[key_char].append(entry)
+        except IndexError as err:
+            logger.error(f"Unhandled line: {line}")
+            logger.error(err)
+    return {k: reconcile_entries(Entry, v) for k, v in ce_dict.items()}
+
+
+def tone_numbers_to_marks(s: str) -> str:
+    brackets_exp = re.compile(r"(?<=\[).+?(?=\])")
+    syllable_exp = re.compile(r"[a-z]+[1-5](?!\d)", re.IGNORECASE)
+    tone_exp = re.compile(r"(a|e|o(?=u)|[oiuü](?=$|n))", re.IGNORECASE)
+    tones = ["\u0304", "\u0301", "\u030c", "\u0300", "\u200b"]
+
+    def pinyin_repl(match: re.Match) -> str:
+        syllable = match[0]
+        if len(syllable) < 1 or not syllable[-1].isdigit():
+            logger.debug(syllable)
+            return syllable
+        tone_num = int(syllable[-1]) - 1
+        if tone_num < 0 or tone_num >= len(tones):
+            logger.debug(syllable)
+            return syllable
+        tone = tones[tone_num]
+        syllable = syllable[:-1]
+        syllable.replace("u:", "ü")
+        syllable = tone_exp.sub(r"\1" + tone, syllable, 1)
+        return syllable
+
+    def syllable_repl(match: re.Match) -> str:
+        return syllable_exp.sub(pinyin_repl, match[0])
+
+    # Give pinyin number-toned syllables diacritics instead.
+    return brackets_exp.sub(syllable_repl, s)
+
+
+def reconcile_entries(Entry, entries):
+    # Set fields that are the same across all dictionary entries.
+    equal_entry = list(
+        functools.reduce(
+            lambda x, y: [i if i == j else "" for i, j in zip(x, y)], entries
+        )
+    )
+    # Set gloss, sorted by pinyin with proper nouns last.
+    equal_entry[Entry._fields.index("gloss")] = str(
+        div[sorted(entries, key=lambda t_entry: t_entry.pinyin.swapcase())]
+    )
+    return Entry(*equal_entry)
