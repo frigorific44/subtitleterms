@@ -11,6 +11,7 @@ vendor_dir = os.path.join(parent_dir, "vendor")
 sys.path.append(vendor_dir)
 
 from .actions import importDeck, updateModels, updateNotes  # noqa: E402
+from .i18n import localization  # noqa: E402
 
 # Configure logger.
 logger = AddonManager.get_logger("subtitleterms")
@@ -22,14 +23,14 @@ elif LOGLEVEL:
 logger.info(f"SubtitleTerms log level is {logger.getEffectiveLevel()}")
 
 # Create menu actions.
-actionImport = QAction("SubtitleTerms: Import", mw)
+actionImport = QAction(f"SubtitleTerms: {localization['toolbar_import']}", mw)
 qconnect(actionImport.triggered, importDeck)
 mw.form.menuCol.insertAction(mw.form.menuCol.actions()[-1], actionImport)
 
-actionModels = QAction("SubtitleTerms: Update Note Types", mw)
+actionModels = QAction(f"SubtitleTerms: {localization['toolbar_update_models']}", mw)
 qconnect(actionModels.triggered, updateModels)
 mw.form.menuTools.addAction(actionModels)
 
-actionNotes = QAction("SubtitleTerms: Update Notes")
+actionNotes = QAction(f"SubtitleTerms: {localization['toolbar_update_notes']}")
 qconnect(actionNotes.triggered, updateNotes)
 mw.form.menuTools.addAction(actionNotes)

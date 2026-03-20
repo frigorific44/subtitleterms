@@ -2,18 +2,19 @@ from aqt.addons import AddonManager
 
 from .deckbuilder.base import BaseDeck
 from .deckbuilder.zh_builder import ZH_Deck, zh_initialize
+from .i18n import localization
 
 logger = AddonManager.get_logger("subtitleterms")
 
 
 builder_tuples: list[tuple[str, BaseDeck]] = [
     (
-        "Chinese (Simplified) > English",
-        ZH_Deck("ZH_SC", "EN", lambda x: zh_initialize(x, "simplified")),
+        f"{localization['zh-Hans']} > {localization['en']}",
+        ZH_Deck("zh-Hans", "en", lambda x: zh_initialize(x, "simplified")),
     ),
     (
-        "Chinese (Traditional) > English",
-        ZH_Deck("ZH_TC", "EN", lambda x: zh_initialize(x, "traditional")),
+        f"{localization['zh-Hant']} > {localization['en']}",
+        ZH_Deck("zh-Hant", "en", lambda x: zh_initialize(x, "traditional")),
     ),
 ]
 builders: dict[str, BaseDeck] = {

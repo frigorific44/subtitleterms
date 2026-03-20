@@ -8,8 +8,9 @@ from aqt.qt import QDialog, QFileDialog
 from aqt.utils import showWarning
 
 from ..builders import builders
-from . import videoextensions
 from ..ext import get_subtitle_streams
+from ..i18n import localization
+from . import videoextensions
 from .importdialog import Ui_ImportDialog
 
 
@@ -40,6 +41,15 @@ class ImportDialog(QDialog, Ui_ImportDialog):
     def __init__(self):
         QDialog.__init__(self, mw)
         self.setupUi(self)
+
+        # Translate labels.
+        # TODO: Add translations.
+        self.fileLabel.setText(localization["dialog_file"])
+        self.filePushButton.setText(localization["dialog_browse"])
+        self.deckLabel.setText(localization["dialog_deck_name"])
+        self.subtitleLabel.setText(localization["dialog_subtitle"])
+        self.dictionaryLabel.setText(localization["dialog_dictionary"])
+
         self.filePushButton.clicked.connect(self.onBrowse)
         self.fileLineEdit.editingFinished.connect(self.onFileEditFinish)
         self.dictionaryComboBox.addItem("-")
