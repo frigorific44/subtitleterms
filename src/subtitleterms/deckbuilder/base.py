@@ -1,3 +1,4 @@
+from ..i18n import localization
 import collections
 import pathlib
 
@@ -112,7 +113,9 @@ class BaseDeck:
         """
 
         def buildOp(col: anki.collection.Collection):
-            undo_entry = col.add_custom_undo_entry("SubtitleTerms: Import")
+            undo_entry = col.add_custom_undo_entry(
+                f"SubtitleTerms: {localization['toolbar_import']}"
+            )
 
             logger.debug(f"Subtitle count = {len(subs)}")
             segments = self.segment(subs)
