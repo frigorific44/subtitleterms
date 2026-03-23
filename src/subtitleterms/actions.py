@@ -1,10 +1,14 @@
 from anki.collection import Collection
 from aqt import mw
-from aqt.operations import QueryOp
+from aqt.addons import AddonManager
+from aqt.operations import CollectionOp, QueryOp
 
 from .builders import builders
 from .ext import ext, parse_srt
+from .i18n import localization
 from .ui import ImportDialog, ImportSettings
+
+logger = AddonManager.get_logger("subtitleterms")
 
 
 def importDeck() -> None:
@@ -36,9 +40,11 @@ def importDeck() -> None:
         parent=mw, op=lambda col: getSubs(col, import_settings), success=onSubsSuccess
     )
     op.with_progress().without_collection().run_in_background()
-    # builder.build(subs)
 
 
+# TODO: Add ability to select which models get updated.
+# Maybe add button on note type view, if possible?
+# Above probably better in addition to below.
 def updateModels() -> None:
     """
     In normal use, if a model has already been added, it remains untouched.
@@ -46,7 +52,38 @@ def updateModels() -> None:
     in case the addon's defined models were updated, or if the user wishes to
     reset changes they had made.
     """
-    pass
+
+    def updateModelsOp(collection: Collection):
+        undo_entry = collection.add_custom_undo_entry(
+            f"SubtitleTerms: {localization['toolbar_update_models']}"
+        )
+        for builder in builders.values():
+            modelmanager = collection.models
+            notetypeid = modelmanager.id_for_name(builder.modelname)
+            # Update model if present.
+            if notetypeid:
+                model = modelmanager.get(notetypeid)
+                if model:
+                    logger.log(
+                        9,
+                        f"Model '{builder.modelname}' before: {model}",
+                    )
+
+                    reference = builder.model(collection)
+                    model["css"] = reference["css"]
+                    # TODO: Update fields and templates in accordance with the model.
+                    modelmanager.update_dict(model)
+
+                    logger.log(
+                        9,
+                        f"Model '{builder.modelname}' after: {modelmanager.get(notetypeid)}",
+                    )
+
+        # TODO: Confirmation of what was updated would be nice.
+        return collection.merge_undo_entries(undo_entry)
+
+    op = CollectionOp(parent=mw, op=updateModelsOp)
+    op.run_in_background()
 
 
 def updateNotes() -> None:

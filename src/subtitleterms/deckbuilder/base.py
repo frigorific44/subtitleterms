@@ -1,6 +1,6 @@
-from ..i18n import localization
 import collections
 import pathlib
+import re
 
 import anki.collection
 import genanki
@@ -9,8 +9,8 @@ from aqt.addons import AddonManager
 from aqt.operations import CollectionOp
 from htpy import div, h1, hr
 
+from ..i18n import localization
 from .entrystore import EntryStore
-
 
 logger = AddonManager.get_logger("subtitleterms")
 
@@ -64,6 +64,28 @@ class BaseDeck:
 
     def model(
         self, collection: anki.collection.Collection
+    ) -> anki.collection.NotetypeDict:
+        modelmanager = collection.models
+        newmodel = modelmanager.new(self.modelname)
+        for field in self.fields:
+            newfield = modelmanager.new_field(field)
+            modelmanager.add_field(newmodel, newfield)
+
+        recog_template = modelmanager.new_template("Recognition")
+        recog_template["qfmt"] = str(div(".recognition .front")[self.template])
+        recog_template["afmt"] = str(div(".recognition .back")[self.template])
+        modelmanager.add_template(newmodel, recog_template)
+
+        recol_template = modelmanager.new_template("Recollection")
+        recol_template["qfmt"] = str(div(".recollection .front")[self.template])
+        recol_template["afmt"] = str(div(".recollection .back")[self.template])
+        modelmanager.add_template(newmodel, recol_template)
+
+        newmodel["css"] = get_css("all_lang.css")
+        return newmodel
+
+    def model_id(
+        self, collection: anki.collection.Collection
     ) -> anki.collection.NotetypeId:
         modelmanager = collection.models
         notetypeid = modelmanager.id_for_name(self.modelname)
@@ -72,23 +94,7 @@ class BaseDeck:
         # TODO: Otherwise, might want to check the present model fulfills our needs.
         # TODO: Set an option to update model.
         if not notetypeid:
-            newmodel = modelmanager.new(self.modelname)
-            for field in self.fields:
-                newfield = modelmanager.new_field(field)
-                modelmanager.add_field(newmodel, newfield)
-
-            recog_template = modelmanager.new_template("Recognition")
-            recog_template["qfmt"] = str(div(".recognition .front")[self.template])
-            recog_template["afmt"] = str(div(".recognition .back")[self.template])
-            modelmanager.add_template(newmodel, recog_template)
-
-            recol_template = modelmanager.new_template("Recollection")
-            recol_template["qfmt"] = str(div(".recollection .front")[self.template])
-            recol_template["afmt"] = str(div(".recollection .back")[self.template])
-            modelmanager.add_template(newmodel, recol_template)
-
-            newmodel["css"] = get_css("all_lang.css")
-
+            newmodel = self.model(collection)
             notetypeid = anki.collection.NotetypeId(modelmanager.add_dict(newmodel).id)
             logger.debug(f"Model '{self.modelname}' added: {notetypeid}")
 
@@ -96,7 +102,8 @@ class BaseDeck:
 
     @property
     def Entry(self):
-        return collections.namedtuple(self.name, self.fields)
+        valid_identifier = re.sub("\W|^(?=\d)", "_", self.name)
+        return collections.namedtuple(valid_identifier, self.fields)
 
     @property
     def db(self):
@@ -170,7 +177,7 @@ class BaseDeck:
         """
         Construct the deck from confirmed terms.
         """
-        model_id = self.model(collection)
+        model_id = self.model_id(collection)
         new_deck = collection.decks.new_deck()
         new_deck.name = f"{deckname}"
         result = collection.decks.add_deck(new_deck)
