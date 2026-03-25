@@ -42,17 +42,16 @@ class BaseDeck:
         div(".hide-rcg-f")["{{gloss}}"],
     ]
 
-    def __init__(self, lang_from, lang_to, db_initialization):
+    def __init__(self, lang_from, lang_to, entry_init):
         """
         Args:
-        model_id: An integer which should be generated once for the note type and hardcoded.
-        name: A unique name.
-        db_initialization: A function which returns a dictionary of terms to construct cards on.
+        lang_from: IETF language tag of the language subtitles are in.
+        lang_to: IETF language tag of the language subtitles are translated to.
+        entry_init: A function which returns a dictionary of terms to construct cards on.
         """
         self.lang_from = lang_from
         self.lang_to = lang_to
-        self.db_initialization = db_initialization
-        self._entrystore = None
+        self.entrystore = EntryStore(self.Entry, entry_init)
 
     @property
     def name(self) -> str:
@@ -105,15 +104,6 @@ class BaseDeck:
         valid_identifier = re.sub("\W|^(?=\d)", "_", self.name)
         return collections.namedtuple(valid_identifier, self.fields)
 
-    @property
-    def db(self):
-        """
-        Returns fully-cached read-write safe copy of the term dictionary.
-        """
-        if not self._entrystore:
-            self._entrystore = EntryStore(self.Entry, self.db_initialization)
-        return self._entrystore.db
-
     def build(self, subs: list[str], deckname: str):
         """
         From a list of subtitle lines, constructs a deck.
@@ -153,18 +143,16 @@ class BaseDeck:
         """
         Return segments confirmed to be in the term dictionary.
         """
-        to_add = dict()
-        entries = []
+        # Insertion order should be preserved.
+        entries = {}
         for term in segments:
-            if term not in self.db:
+            if term not in self.entrystore:
                 for sub_term in self.lookup_fallback(term):
-                    if sub_term not in to_add:
-                        to_add[sub_term] = True
-            elif term not in to_add:
-                to_add[term] = True
-        for term in to_add:
-            entries.append(self.db[term])
-        return entries
+                    if sub_term not in entries:
+                        entries[term] = self.entrystore[term]
+            elif term not in entries:
+                entries[term] = self.entrystore[term]
+        return entries.values()
 
     def lookup_fallback(self, term: str):
         """

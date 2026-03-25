@@ -42,7 +42,7 @@ class ZH_Deck(BaseDeck):
             combinations = []
             for i in range(len(runes)):
                 curr = runes[: i + 1]
-                if curr in self.db:
+                if curr in self.entrystore:
                     remainder = defined_combinations(runes[i + 1 :])
                     for r_combo in remainder:
                         combinations.append([curr, *r_combo])
