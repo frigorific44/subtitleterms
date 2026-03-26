@@ -28,6 +28,15 @@ class EntryStore(Mapping):
                 self.cached_db = {k: self.Entry(*v) for k, v in json.load(f).items()}
         return self.cached_db
 
+    def refresh(self):
+        """
+        Clears the cached data and reconstructs the EntryStore.
+        """
+        if self.datapath.exists():
+            self.datapath.unlink()
+        self.cached_db = None
+        self.db
+
     def __getitem__(self, k):
         return self.db[k]
 
