@@ -141,7 +141,7 @@ class BaseDeck:
 
     def lookup(self, segments: list[str]):
         """
-        Return segments confirmed to be in the term dictionary.
+        Returns matching term dictionary entries.
         """
         # Insertion order should be preserved.
         entries = {}

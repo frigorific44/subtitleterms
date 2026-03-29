@@ -32,6 +32,7 @@ class EntryStore(Mapping):
         """
         Clears the cached data and reconstructs the EntryStore.
         """
+        # TODO: Rename previous data to serve as backup.
         if self.datapath.exists():
             self.datapath.unlink()
         self.cached_db = None
