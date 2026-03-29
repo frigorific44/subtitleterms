@@ -91,4 +91,36 @@ def updateNotes() -> None:
     For the user to manually update and reset currently used SubtitleTerms notes,
     and their respective source dictionaries.
     """
-    pass
+
+    def updateNotesOp(collection: Collection):
+        undo_entry = collection.add_custom_undo_entry(
+            f"SubtitleTerms: {localization['toolbar_update_notes']}"
+        )
+        for builder in builders.values():
+            modelmanager = collection.models
+            notetypeid = modelmanager.id_for_name(builder.modelname)
+            # Update model if present.
+            if notetypeid:
+                builder.entrystore.refresh()
+
+                changed_notes = []
+                for noteid in modelmanager.nids(notetypeid):
+                    note = collection.get_note(noteid)
+
+                    logger.log(9, f"Note to update: {note.fields}")
+
+                    index = builder.fields[0]
+                    if index in note and note[index] in builder.entrystore:
+                        entry = builder.entrystore[note[index]]
+                        for field_key, field_val in entry._asdict().items():
+                            if field_key in note and note[field_key] != field_val:
+                                note[field_key] = field_val
+
+                        changed_notes.append(note)
+                collection.update_notes(changed_notes)
+
+        # TODO: Confirmation of what was updated would be nice.
+        return collection.merge_undo_entries(undo_entry)
+
+    op = CollectionOp(parent=mw, op=updateNotesOp)
+    op.run_in_background()
