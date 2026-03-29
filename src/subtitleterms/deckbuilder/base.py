@@ -3,7 +3,6 @@ import pathlib
 import re
 
 import anki.collection
-import genanki
 from aqt import mw
 from aqt.addons import AddonManager
 from aqt.operations import CollectionOp
@@ -30,8 +29,6 @@ class LangNote(anki.collection.Note):
     ):
         super().__init__(collection, model, None)
         self.fields = fields
-        # GUID is generated on the term only, to allow updating deck information.
-        self.guid = genanki.guid_for(self.fields[0])
 
 
 class BaseDeck:
