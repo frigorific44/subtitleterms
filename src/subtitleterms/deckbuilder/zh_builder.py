@@ -108,7 +108,7 @@ def zh_initialize(Entry, char_set):
 
 def tone_numbers_to_marks(s: str) -> str:
     brackets_exp = re.compile(r"(?<=\[).+?(?=\])")
-    syllable_exp = re.compile(r"[a-z]+[1-5](?!\d)", re.IGNORECASE)
+    syllable_exp = re.compile(r"[a-z:]+[1-5](?!\d)", re.IGNORECASE)
     tone_exp = re.compile(r"(a|e|o(?=u)|[oiuü](?=$|n))", re.IGNORECASE)
 
     def pinyin_repl(match: re.Match) -> str:
@@ -122,7 +122,7 @@ def tone_numbers_to_marks(s: str) -> str:
             return syllable
         tone = tones[tone_num]
         syllable = syllable[:-1]
-        syllable.replace("u:", "ü")
+        syllable = syllable.replace("u:", "ü")
         syllable = tone_exp.sub(r"\1" + tone, syllable, 1)
         return syllable
 

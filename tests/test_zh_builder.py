@@ -3,7 +3,7 @@ from subtitleterms.deckbuilder.zh_builder import tone_numbers_to_marks, tones
 
 def test_tone_numbers_to_marks_umlaut():
     question = "情侶 情侣 [qing2 lu:3] /sweethearts/lovers/"
-    answer = f"情侶 情侣 [qi{tones[2 - 1]}ng lu{tones[3 - 1]}] /sweethearts/lovers/"
+    answer = f"情侶 情侣 [qi{tones[2 - 1]}ng lü{tones[3 - 1]}] /sweethearts/lovers/"
     assert tone_numbers_to_marks(question) == answer
 
 
