@@ -12,6 +12,8 @@ from .base import BaseDeck
 
 logger = AddonManager.get_logger("subtitleterms")
 
+tones = ["\u0304", "\u0301", "\u030c", "\u0300", "\u200b"]
+
 
 class ZH_Deck(BaseDeck):
     template = [
@@ -108,7 +110,6 @@ def tone_numbers_to_marks(s: str) -> str:
     brackets_exp = re.compile(r"(?<=\[).+?(?=\])")
     syllable_exp = re.compile(r"[a-z]+[1-5](?!\d)", re.IGNORECASE)
     tone_exp = re.compile(r"(a|e|o(?=u)|[oiuü](?=$|n))", re.IGNORECASE)
-    tones = ["\u0304", "\u0301", "\u030c", "\u0300", "\u200b"]
 
     def pinyin_repl(match: re.Match) -> str:
         syllable = match[0]
