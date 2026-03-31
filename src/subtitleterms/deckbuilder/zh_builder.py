@@ -135,13 +135,14 @@ def tone_numbers_to_marks(s: str) -> str:
 
 def reconcile_entries(Entry, entries):
     # Set fields that are the same across all dictionary entries.
+    # TODO: Address same pinyin, different capitalization.
+    # Sort by pinyin, with proper nouns last.
+    entries = sorted(entries, key=lambda t_entry: t_entry.pinyin.swapcase())
     equal_entry = list(
         functools.reduce(
             lambda x, y: [i if i == j else "" for i, j in zip(x, y)], entries
         )
     )
-    # Set gloss, sorted by pinyin with proper nouns last.
-    equal_entry[Entry._fields.index("gloss")] = str(
-        div[sorted(entries, key=lambda t_entry: t_entry.pinyin.swapcase())]
-    )
+    # Set gloss.
+    equal_entry[Entry._fields.index("gloss")] = str(div[entries])
     return Entry(*equal_entry)
