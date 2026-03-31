@@ -97,7 +97,10 @@ def zh_initialize(Entry, char_set):
             else:
                 key_char = simplified
                 other_char = traditional
-            gloss = [h2[span[other_char], span[pinyin]], (p[sense] for sense in senses)]
+            gloss = [
+                h2[span[other_char], " ", span[pinyin]],
+                (p[sense] for sense in senses),
+            ]
             entry = Entry(term=key_char, pinyin=pinyin, gloss=gloss)
             ce_dict[key_char].append(entry)
         except IndexError as err:
