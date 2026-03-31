@@ -144,5 +144,6 @@ def reconcile_entries(Entry, entries):
         )
     )
     # Set gloss.
-    equal_entry[Entry._fields.index("gloss")] = str(div[entries])
+    gloss_index = Entry._fields.index("gloss")
+    equal_entry[gloss_index] = str(div[[entry[gloss_index] for entry in entries]])
     return Entry(*equal_entry)
