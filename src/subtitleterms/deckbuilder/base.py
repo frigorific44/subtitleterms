@@ -98,7 +98,7 @@ class BaseDeck:
 
     @property
     def Entry(self):
-        valid_identifier = re.sub("\W|^(?=\d)", "_", self.name)
+        valid_identifier = re.sub(r"\W|^(?=\d)", "_", self.name)
         return collections.namedtuple(valid_identifier, self.fields)
 
     def build(self, subs: list[str], deckname: str):
