@@ -71,6 +71,19 @@ def updateModels() -> None:
 
                     reference = builder.model(collection)
                     model["css"] = reference["css"]
+                    # TODO: Something less manual than this, but I've been burned before.
+                    for tmpl_i in range(len(reference["tmpls"])):
+                        for tmpl_j in range(len(model["tmpls"])):
+                            if (
+                                reference["tmpls"][tmpl_i]["name"]
+                                == model["tmpls"][tmpl_j]["name"]
+                            ):
+                                model["tmpls"][tmpl_j]["qfmt"] = reference["tmpls"][
+                                    tmpl_i
+                                ]["qfmt"]
+                                model["tmpls"][tmpl_j]["afmt"] = reference["tmpls"][
+                                    tmpl_i
+                                ]["afmt"]
                     # TODO: Update fields and templates in accordance with the model.
                     modelmanager.update_dict(model)
 
