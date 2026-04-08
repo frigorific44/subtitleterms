@@ -1,7 +1,8 @@
 from anki.collection import Collection
 from aqt import mw
 from aqt.addons import AddonManager
-from aqt.operations import CollectionOp, QueryOp
+from aqt.operations import CollectionOp, QueryOp, ResultWithChanges
+from aqt.utils import showText
 
 from .builders import builders
 from .ext import ext, parse_srt
@@ -53,7 +54,7 @@ def updateModels() -> None:
     reset changes they had made.
     """
 
-    def updateModelsOp(collection: Collection):
+    def updateModelsOp(collection: Collection, log: list[str]):
         undo_entry = collection.add_custom_undo_entry(
             f"SubtitleTerms: {localization['toolbar_update_models']}"
         )
@@ -64,27 +65,41 @@ def updateModels() -> None:
             if notetypeid:
                 model = modelmanager.get(notetypeid)
                 if model:
+                    model_log = [f"\n{model['name']}"]
                     logger.log(
                         9,
                         f"Model '{builder.modelname}' before: {model}",
                     )
 
-                    reference = builder.model(collection)
-                    model["css"] = reference["css"]
+                    ref = builder.model(collection)
+
+                    # Update CSS
+                    if model["css"] != ref["css"]:
+                        model["css"] = ref["css"]
+                        model_log.append(" - CSS updated")
+
+                    # Update templates.
                     # TODO: Something less manual than this, but I've been burned before.
-                    for tmpl_i in range(len(reference["tmpls"])):
-                        for tmpl_j in range(len(model["tmpls"])):
-                            if (
-                                reference["tmpls"][tmpl_i]["name"]
-                                == model["tmpls"][tmpl_j]["name"]
-                            ):
-                                model["tmpls"][tmpl_j]["qfmt"] = reference["tmpls"][
-                                    tmpl_i
-                                ]["qfmt"]
-                                model["tmpls"][tmpl_j]["afmt"] = reference["tmpls"][
-                                    tmpl_i
-                                ]["afmt"]
-                    # TODO: Update fields and templates in accordance with the model.
+                    for i in range(len(ref["tmpls"])):
+                        for j in range(len(model["tmpls"])):
+                            if ref["tmpls"][i]["name"] == model["tmpls"][j]["name"]:
+                                if model["tmpls"][j]["qfmt"] != ref["tmpls"][i]["qfmt"]:
+                                    model["tmpls"][j]["qfmt"] = ref["tmpls"][i]["qfmt"]
+                                    model_log.append(
+                                        f' - "{ref["tmpls"][i]["name"]}" qfmt updated'
+                                    )
+                                if model["tmpls"][j]["afmt"] != ref["tmpls"][i]["afmt"]:
+                                    model["tmpls"][j]["afmt"] = ref["tmpls"][i]["afmt"]
+                                    model_log.append(
+                                        f' - "{ref["tmpls"][i]["name"]}" afmt updated'
+                                    )
+
+                    # Update fields
+                    # TODO: Update fields in accordance with the model.
+
+                    if len(model_log) == 1:
+                        model_log.append(" - No properties updated")
+                    log.extend(model_log)
                     modelmanager.update_dict(model)
 
                     logger.log(
@@ -92,11 +107,15 @@ def updateModels() -> None:
                         f"Model '{builder.modelname}' after: {modelmanager.get(notetypeid)}",
                     )
 
-        # TODO: Confirmation of what was updated would be nice.
         return collection.merge_undo_entries(undo_entry)
 
-    op = CollectionOp(parent=mw, op=updateModelsOp)
-    op.run_in_background()
+    def updateModelsSuccess(result: ResultWithChanges, log: list[str]):
+        log_str = "\n".join(log)
+        showText(log_str, plain_text_edit=True)
+
+    log = ["SubtitleTerms\n", "Models Updated:"]
+    op = CollectionOp(parent=mw, op=lambda col: updateModelsOp(col, log))
+    op.success(lambda result: updateModelsSuccess(result, log)).run_in_background()
 
 
 def updateNotes() -> None:
