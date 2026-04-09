@@ -1,4 +1,3 @@
-from difflib import ndiff
 from anki.collection import Collection
 from aqt import mw
 from aqt.addons import AddonManager
@@ -46,7 +45,6 @@ def importDeck() -> None:
 
 # TODO: Add ability to select which models get updated.
 # Maybe add button on note type view, if possible?
-# Above probably better in addition to below.
 def updateModels() -> None:
     """
     In normal use, if a model has already been added, it remains untouched.
@@ -61,52 +59,45 @@ def updateModels() -> None:
         )
         for builder in builders.values():
             modelmanager = collection.models
+            # Update only if model is present.
             notetypeid = modelmanager.id_for_name(builder.modelname)
-            # Update model if present.
-            if notetypeid:
-                model = modelmanager.get(notetypeid)
-                if model:
-                    model_log = [f"\n{model['name']}"]
-                    logger.log(
-                        9,
-                        f"Model '{builder.modelname}' before: {model}",
-                    )
+            if not notetypeid:
+                continue
+            model = modelmanager.get(notetypeid)
+            if not model:
+                continue
+            model_log = [f"\n{model['name']}"]
 
-                    ref = builder.model(collection)
+            ref = builder.model(collection)
 
-                    # Update CSS
-                    if model["css"] != ref["css"]:
-                        model["css"] = ref["css"]
-                        model_log.append(" - CSS updated")
+            # Update CSS
+            if model["css"] != ref["css"]:
+                model["css"] = ref["css"]
+                model_log.append(" - CSS updated")
 
-                    # Update templates.
-                    # TODO: Something less manual than this, but I've been burned before.
-                    for i in range(len(ref["tmpls"])):
-                        for j in range(len(model["tmpls"])):
-                            if ref["tmpls"][i]["name"] == model["tmpls"][j]["name"]:
-                                if model["tmpls"][j]["qfmt"] != ref["tmpls"][i]["qfmt"]:
-                                    model["tmpls"][j]["qfmt"] = ref["tmpls"][i]["qfmt"]
-                                    model_log.append(
-                                        f' - "{ref["tmpls"][i]["name"]}" qfmt updated'
-                                    )
-                                if model["tmpls"][j]["afmt"] != ref["tmpls"][i]["afmt"]:
-                                    model["tmpls"][j]["afmt"] = ref["tmpls"][i]["afmt"]
-                                    model_log.append(
-                                        f' - "{ref["tmpls"][i]["name"]}" afmt updated'
-                                    )
+            # Update templates.
+            # TODO: Something less manual than this, but I've been burned before.
+            for i in range(len(ref["tmpls"])):
+                for j in range(len(model["tmpls"])):
+                    if ref["tmpls"][i]["name"] == model["tmpls"][j]["name"]:
+                        if model["tmpls"][j]["qfmt"] != ref["tmpls"][i]["qfmt"]:
+                            model["tmpls"][j]["qfmt"] = ref["tmpls"][i]["qfmt"]
+                            model_log.append(
+                                f' - "{ref["tmpls"][i]["name"]}" qfmt updated'
+                            )
+                        if model["tmpls"][j]["afmt"] != ref["tmpls"][i]["afmt"]:
+                            model["tmpls"][j]["afmt"] = ref["tmpls"][i]["afmt"]
+                            model_log.append(
+                                f' - "{ref["tmpls"][i]["name"]}" afmt updated'
+                            )
 
-                    # Update fields
-                    # TODO: Update fields in accordance with the model.
+            # Update fields
+            # TODO: Update fields in accordance with the model.
 
-                    if len(model_log) == 1:
-                        model_log.append(" - No properties updated")
-                    log.extend(model_log)
-                    modelmanager.update_dict(model)
-
-                    logger.log(
-                        9,
-                        f"Model '{builder.modelname}' after: {modelmanager.get(notetypeid)}",
-                    )
+            if len(model_log) == 1:
+                model_log.append(" - No properties updated")
+            log.extend(model_log)
+            modelmanager.update_dict(model)
 
         return collection.merge_undo_entries(undo_entry)
 
@@ -132,32 +123,35 @@ def updateNotes() -> None:
         for builder in builders.values():
             modelmanager = collection.models
             notetypeid = modelmanager.id_for_name(builder.modelname)
-            # Update model if present.
-            if notetypeid:
-                builder.entrystore.refresh()
-                log.append(f'\n"{builder.modelname}" entries refreshed.')
+            # Update only if model is present.
+            if not notetypeid:
+                continue
+            builder.entrystore.refresh()
+            log.append(f'\n"{builder.modelname}" entries refreshed.')
 
-                changed_notes = []
-                for noteid in modelmanager.nids(notetypeid):
-                    note = collection.get_note(noteid)
+            changed_notes = []
+            for noteid in modelmanager.nids(notetypeid):
+                note = collection.get_note(noteid)
 
-                    logger.log(9, f"Note to update: {note.fields}")
+                logger.log(9, f"Note to update: {note.fields}")
 
-                    index = builder.fields[0]
-                    if index in note and note[index] in builder.entrystore:
-                        note_log = [f"\n{note[index]}"]
+                index = builder.fields[0]
+                if index in note:
+                    note_log = [f"\n{note[index]}"]
+                    if note[index] in builder.entrystore:
                         entry = builder.entrystore[note[index]]
                         for field_key, field_val in entry._asdict().items():
                             if field_key in note and note[field_key] != field_val:
                                 note[field_key] = field_val
                                 note_log.append(f' - Field "{field_key}" updated')
-                        if len(note_log) > 1:
-                            log.extend(note_log)
+                    else:
+                        note_log.append(" - Term not found in dictionary")
+                    if len(note_log) > 1:
+                        log.extend(note_log)
 
-                        changed_notes.append(note)
-                collection.update_notes(changed_notes)
+                    changed_notes.append(note)
+            collection.update_notes(changed_notes)
 
-        # TODO: Confirmation of what was updated would be nice.
         return collection.merge_undo_entries(undo_entry)
 
     def updateNotesSuccess(result: ResultWithChanges, log: list[str]):
