@@ -1,3 +1,4 @@
+from difflib import ndiff
 from anki.collection import Collection
 from aqt import mw
 from aqt.addons import AddonManager
@@ -113,7 +114,7 @@ def updateModels() -> None:
         log_str = "\n".join(log)
         showText(log_str, plain_text_edit=True)
 
-    log = ["SubtitleTerms\n", "Models Updated:"]
+    log = ["SubtitleTerms", "\nModels Updated:"]
     op = CollectionOp(parent=mw, op=lambda col: updateModelsOp(col, log))
     op.success(lambda result: updateModelsSuccess(result, log)).run_in_background()
 
@@ -124,7 +125,7 @@ def updateNotes() -> None:
     and their respective source dictionaries.
     """
 
-    def updateNotesOp(collection: Collection):
+    def updateNotesOp(collection: Collection, log: list[str]):
         undo_entry = collection.add_custom_undo_entry(
             f"SubtitleTerms: {localization['toolbar_update_notes']}"
         )
@@ -134,6 +135,7 @@ def updateNotes() -> None:
             # Update model if present.
             if notetypeid:
                 builder.entrystore.refresh()
+                log.append(f'\n"{builder.modelname}" entries refreshed.')
 
                 changed_notes = []
                 for noteid in modelmanager.nids(notetypeid):
@@ -143,10 +145,14 @@ def updateNotes() -> None:
 
                     index = builder.fields[0]
                     if index in note and note[index] in builder.entrystore:
+                        note_log = [f"\n{note[index]}"]
                         entry = builder.entrystore[note[index]]
                         for field_key, field_val in entry._asdict().items():
                             if field_key in note and note[field_key] != field_val:
                                 note[field_key] = field_val
+                                note_log.append(f' - Field "{field_key}" updated')
+                        if len(note_log) > 1:
+                            log.extend(note_log)
 
                         changed_notes.append(note)
                 collection.update_notes(changed_notes)
@@ -154,5 +160,10 @@ def updateNotes() -> None:
         # TODO: Confirmation of what was updated would be nice.
         return collection.merge_undo_entries(undo_entry)
 
-    op = CollectionOp(parent=mw, op=updateNotesOp)
-    op.run_in_background()
+    def updateNotesSuccess(result: ResultWithChanges, log: list[str]):
+        log_str = "\n".join(log)
+        showText(log_str, plain_text_edit=True)
+
+    log = ["SubtitleTerms", "\nNotes Updated:"]
+    op = CollectionOp(parent=mw, op=lambda col: updateNotesOp(col, log))
+    op.success(lambda result: updateNotesSuccess(result, log)).run_in_background()
