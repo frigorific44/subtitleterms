@@ -1,3 +1,4 @@
+import unicodedata
 import functools
 import gzip
 import re
@@ -133,7 +134,7 @@ def tone_numbers_to_marks(s: str) -> str:
         return syllable_exp.sub(pinyin_repl, match[0])
 
     # Give pinyin number-toned syllables diacritics instead.
-    return brackets_exp.sub(syllable_repl, s)
+    return unicodedata.normalize("NFC", brackets_exp.sub(syllable_repl, s))
 
 
 def reconcile_entries(Entry, entries):
