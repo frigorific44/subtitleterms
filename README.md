@@ -10,6 +10,18 @@ XXXXXX
 
 To make full use of the plug-in, [FFmpeg](https://ffmpeg.org/download.html) must be installed and present on the PATH. FFmpeg is a free and open-source tool for handling multimedia files, and is used to extract subtitles from videos. Many guides for installing FFmpeg and adding it to your PATH are available. If you don't wish to install FFmpeg or are unable to, subtitles can be extracted into a `.srt` (SubRip Text) formatted file with another tool, and imported with SubtitleTerms from the text file.
 
+## Usage
+
+### Creating Decks
+
+#### Subtitled Videos
+
+#### Text Formats
+
+### Updating
+
+### Converting Existing Cards
+
 ## Contributing
 
 ### Adding Dictionaries
