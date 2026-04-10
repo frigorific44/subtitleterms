@@ -14,13 +14,19 @@ To make full use of the plug-in, [FFmpeg](https://ffmpeg.org/download.html) must
 
 ### Creating Decks
 
+The dialog to create a deck can be brought up with `File > SubtitleTerms: Import` in the toolbar.
+
 #### Subtitled Videos
+
+When a video file is selected in the import dialog, SubtitleTerms will attempt to glean the subtitles available, and the relevant one can be selected from the dropdown. As per [Installation](#installation), this is reliant upon FFmpeg being installed and in the PATH. Depending on how the subtitles are stored, such as if the subtitle streams are stored as bitmap images, it may not be possible for FFmpeg to extract the text.
 
 #### Text Formats
 
 ### Updating
 
 ### Converting Existing Cards
+
+Updating notes and note types is done by name, which allows for the possibility of compatability with pre-existing notes.
 
 ## Contributing
 
