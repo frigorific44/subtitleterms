@@ -1,10 +1,15 @@
 # SubtitleTerms
 
-An Anki plug-in for turning subtitles—or more broadly any text document—into flashcards for language learning.
+An Anki plug-in for turning subtitles—or more broadly any text document—into flashcards for language learning. Once using SubtitleTerms cards, you can learn a language through your show of choice and generate cards episode by episode, adding newly encountered terms to your repoitoire as you gradually develop mastery over the language.
+
+### Currently Supported Language Pairs
+
+- Chinese (Simplified) → English
+- Chinese (Traditional) → English
 
 ## Installation
 
-The plug-in can be installed through the normals means, by using the in-app plug-in search, or copying the code:
+The plug-in can be installed through the normals means by using the in-app plug-in search, or copying the code:
 
 XXXXXX
 
@@ -16,15 +21,27 @@ To make full use of the plug-in, [FFmpeg](https://ffmpeg.org/download.html) must
 
 The dialog to create a deck can be brought up with `File > SubtitleTerms: Import` in the toolbar.
 
+- **File**: The file from which cards will be generated, which can either by a video container or text file.
+
+- **Deck Name**: The file name will be used by default for the name of the generated deck for convenience, but this can be changed.
+
+- **Subtitle**: If the file selected is a video container with subtitles, this will be a drop-down list from which the relevant subtitle stream can be selected. Otherwise, this option is irrelevant.
+
+- **Dictionary**: A dropdown containing the supported translation/bilingual dictionaries of SubtitleTerms. For expanding this support, see [Contributing](#contributing). The language on the left will be the language of the subtitles/text which you're trying to learn, and the language on the right is the language terms will be translated to.
+
 #### Subtitled Videos
 
 When a video file is selected in the import dialog, SubtitleTerms will attempt to glean the subtitles available, and the relevant one can be selected from the dropdown. As per [Installation](#installation), this is reliant upon FFmpeg being installed and in the PATH. Depending on how the subtitles are stored, such as if the subtitle streams are stored as bitmap images, it may not be possible for FFmpeg to extract the text.
 
-#### Text Formats
+#### Text Files
+
+For text files, `.srt` (SubRip Text) is specifically supported so as to only parse the subtitle text and not the timestamp information for terms to create cards from. Other text files can also be selected, but will be parsed whole as generic text. 
 
 ### Updating
 
-### Converting Existing Cards
+ 
+
+#### Converting Existing Cards
 
 Updating notes and note types is done by name, which allows for the possibility of compatability with pre-existing notes.
 
