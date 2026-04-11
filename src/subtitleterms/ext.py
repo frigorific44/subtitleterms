@@ -8,6 +8,7 @@ from aqt.addons import AddonManager
 logger = AddonManager.get_logger("subtitleterms")
 
 
+# TODO: Find a way to remove the FFmpeg dependency.
 def get_subtitle_streams(input_path: pathlib.Path) -> dict:
     if not shutil.which("ffprobe"):
         logger.error(
