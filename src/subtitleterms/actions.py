@@ -91,8 +91,13 @@ def updateModels() -> None:
                                 f' - "{ref["tmpls"][i]["name"]}" afmt updated'
                             )
 
-            # Update fields
-            # TODO: Update fields in accordance with the model.
+            # Add missing fields.
+            for field_name in set(modelmanager.field_names(ref)) - set(
+                modelmanager.field_names(model)
+            ):
+                missing_field = modelmanager.new_field(field_name)
+                modelmanager.add_field(model, missing_field)
+                model_log.append(f' - field "{field_name}" added')
 
             if len(model_log) == 1:
                 model_log.append(" - No properties updated")
