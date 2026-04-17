@@ -1,13 +1,13 @@
-import unicodedata
 import functools
 import gzip
 import re
+import unicodedata
 from collections import defaultdict
 
 import jieba.posseg
 import requests
 from aqt.addons import AddonManager
-from htpy import div, h1, h2, hr, p, rt, ruby, span
+from htpy import div, h1, h2, hr, li, rt, ruby, span, ul
 
 from .base import BaseDeck
 
@@ -98,9 +98,10 @@ def zh_initialize(Entry, char_set):
             else:
                 key_char = simplified
                 other_char = traditional
+            # TODO: When there's only one gloss, leave out the gloss header.
             gloss = [
                 h2[span[other_char], " ", span[pinyin]],
-                (p[sense] for sense in senses),
+                ul[(li[sense] for sense in senses)],
             ]
             entry = Entry(term=key_char, pinyin=pinyin, gloss=gloss)
             ce_dict[key_char].append(entry)
