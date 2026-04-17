@@ -146,7 +146,7 @@ class BaseDeck:
             if term not in self.entrystore:
                 for sub_term in self.lookup_fallback(term):
                     if sub_term not in entries:
-                        entries[term] = self.entrystore[term]
+                        entries[sub_term] = self.entrystore[sub_term]
             elif term not in entries:
                 entries[term] = self.entrystore[term]
         return entries.values()
