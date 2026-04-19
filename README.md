@@ -49,6 +49,10 @@ There are two actions under `Tools` in the toolbar: `SubtitleTerms: Update Note 
 
 As `Update Notes` downloads new copies of translation dictionaries relevant to the note types you're using, this can take some time depending on your connection speeds, so please be patient.
 
+#### Adding/Editing Terms
+
+While the main burden of creating notes should be borne by the plug-in, there may be times where you wish to add cards or edit existing cards. For adding cards, you can add a card to the deck, and after filling in the `term` field use `Subtitle Terms: Update Notes` in order to fill in the rest of the information. Similarly for editing, you can use `Subtitle Terms: Update Notes` to update the other fields after making changes to the `term` field.
+
 #### Converting Existing Cards
 
 Updating notes and note types is done by name, which allows for the possibility of converting pre-existing notes. To do so, you at least need to know the name of the note type you're targeting.
