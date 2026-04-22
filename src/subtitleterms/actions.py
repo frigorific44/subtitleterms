@@ -25,8 +25,6 @@ def importDeck() -> None:
             sub_text = ext(import_settings.path, import_settings.subtitle_stream)
             subs = parse_srt(sub_text)
         else:
-            # TODO: Better determine the encoding.
-            # TODO: utf-8-sig instead?
             sub_text = import_settings.path.read_text(encoding="utf-8")
             if import_settings.path.suffix == ".srt":
                 subs = parse_srt(sub_text)
