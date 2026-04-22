@@ -43,7 +43,6 @@ class ImportDialog(QDialog, Ui_ImportDialog):
         self.setupUi(self)
 
         # Translate labels.
-        # TODO: Add translations.
         self.fileLabel.setText(localization["dialog_file"])
         self.filePushButton.setText(localization["dialog_browse"])
         self.deckLabel.setText(localization["dialog_deck_name"])
@@ -86,8 +85,7 @@ class ImportDialog(QDialog, Ui_ImportDialog):
             self.subtitleComboBox.setEnabled(False)
             self.subtitleComboBox.clear()
         else:
-            # TODO: Could change cursor, but text in combo box is a good indicator for now.
-            # mw.app.setOverrideCursor(Qt.CursorShape.BusyCursor)
+
             def subtitleExtract(col: Collection) -> dict:
                 streams = get_subtitle_streams(self.file_path)  # ty:ignore[invalid-argument-type]
                 return streams
