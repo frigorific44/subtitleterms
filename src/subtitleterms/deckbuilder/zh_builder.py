@@ -17,6 +17,7 @@ tones = ["\u0304", "\u0301", "\u030c", "\u0300", "\u200b"]
 
 
 class ZH_Deck(BaseDeck):
+    # TODO: ruby should be per character rather than whole term.
     template = [
         h1(".hide-rcl-f")[ruby["{{term}}", rt(".hide-rcg-f")["{{pinyin}}"]]],
         hr,
