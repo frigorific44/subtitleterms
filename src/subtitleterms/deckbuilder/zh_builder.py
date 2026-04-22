@@ -105,7 +105,6 @@ def zh_initialize(Entry, char_set):
             else:
                 key_char = simplified
                 other_char = traditional
-            # TODO: When there's only one gloss, leave out the gloss header.
             gloss = [
                 h2[span[other_char], " ", span[pinyin]],
                 ul[(li[sense] for sense in senses)],
@@ -164,5 +163,8 @@ def reconcile_entries(Entry, entries):
     equal_entry = list(functools.reduce(equal_entry_reduce, entries))
     # Set gloss.
     gloss_index = Entry._fields.index("gloss")
-    equal_entry[gloss_index] = str(div[[entry[gloss_index] for entry in entries]])
+    if len(entries) == 1:
+        equal_entry[gloss_index] = str(div[entries[0][gloss_index][1]])
+    else:
+        equal_entry[gloss_index] = str(div[[entry[gloss_index] for entry in entries]])
     return Entry(*equal_entry)
