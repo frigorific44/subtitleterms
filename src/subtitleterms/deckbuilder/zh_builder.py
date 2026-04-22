@@ -37,7 +37,6 @@ class ZH_Deck(BaseDeck):
         return list(word_set)
 
     def lookup_fallback(self, term: str):
-        # TODO: Fallback for partial matches.
         # Calculate combinations of substrings contained in the dictionary.
         def defined_combinations(runes: str) -> list[list[str]]:
             if runes == "":
@@ -49,6 +48,14 @@ class ZH_Deck(BaseDeck):
                     remainder = defined_combinations(runes[i + 1 :])
                     for r_combo in remainder:
                         combinations.append([curr, *r_combo])
+            # If all failed, the common denominator being the first character
+            # means excluding it may give at least partial combinations.
+            if len(combinations) == 0:
+                remainder = defined_combinations(runes[i + 1 :])
+                combinations.extend(remainder)
+                logger.info(
+                    f"No matches found for substring '{runes}' of term '{term}'."
+                )
             return combinations
 
         # Longer substrings are favored.
