@@ -131,7 +131,7 @@ def updateNotes() -> None:
             # Update only if model is present.
             if not notetypeid:
                 continue
-            builder.entrystore.refresh()
+            builder.entrystore.update_cache()
             log.append(f'\n"{builder.modelname}" entries refreshed.')
 
             changed_notes = []

@@ -3,7 +3,13 @@ import json
 import pathlib
 
 
+# TODO: Enfore types (add typing)
 class EntryStore(Mapping):
+    """
+    entry: contstructor
+    get_entries: should return a dictionary of entries, or None on failure
+    """
+
     def __init__(self, entry, get_entries):
         self.Entry = entry
         self.dirpath = pathlib.Path(__file__).parent.joinpath("data")
@@ -16,27 +22,24 @@ class EntryStore(Mapping):
         if self.cached_db:
             return self.cached_db
         if not self.datapath.exists():
-            self.cached_db = self.get_entries(self.Entry)
-            if self.cached_db:
-                self.dirpath.mkdir(exist_ok=True)
-                with self.datapath.open(mode="w") as f:
-                    json.dump(
-                        self.cached_db, f, ensure_ascii=False, sort_keys=True, indent=4
-                    )
+            self.update_cache()
         else:
             with self.datapath.open(mode="r") as f:
                 self.cached_db = {k: self.Entry(*v) for k, v in json.load(f).items()}
         return self.cached_db
 
-    def refresh(self):
+    def update_cache(self):
         """
-        Clears the cached data and reconstructs the EntryStore.
+        Attemps to retrieve up-to-date entries and persist them to disk and memory.
         """
-        # TODO: Rename previous data to serve as backup.
-        if self.datapath.exists():
-            self.datapath.unlink()
-        self.cached_db = None
-        self.db
+        entries = self.get_entries(self.Entry)
+        # get_entries should return None on failure so we don't overwrite
+        # with blank data.
+        if entries:
+            self.cached_db = entries
+            self.dirpath.mkdir(exist_ok=True)
+            with self.datapath.open(mode="w") as f:
+                json.dump(entries, f, ensure_ascii=False, sort_keys=True, indent=4)
 
     def __getitem__(self, k):
         return self.db[k]
