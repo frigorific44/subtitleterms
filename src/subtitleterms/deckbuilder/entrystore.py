@@ -3,7 +3,7 @@ import json
 import pathlib
 
 
-# TODO: Enfore types (add typing)
+# TODO: Enforce types (add typing)
 class EntryStore(Mapping):
     """
     entry: contstructor
