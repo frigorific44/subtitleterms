@@ -1,6 +1,5 @@
-import collections
+import dataclasses
 import pathlib
-import re
 
 import anki.collection
 from aqt import mw
@@ -9,7 +8,7 @@ from aqt.operations import CollectionOp
 from htpy import div, h1, hr
 
 from ..i18n import localization
-from .entrystore import EntryStore
+from .entrystore import BaseEntry, EntryStore
 
 logger = AddonManager.get_logger("subtitleterms")
 
@@ -32,7 +31,6 @@ class LangNote(anki.collection.Note):
 
 
 class BaseDeck:
-    fields = ["term", "gloss"]
     template = [
         h1(".hide-rcl-f")["{{term}}"],
         hr,
@@ -48,7 +46,7 @@ class BaseDeck:
         """
         self.lang_from = lang_from
         self.lang_to = lang_to
-        self.entrystore = EntryStore(self.Entry, entry_init)
+        self.entrystore = EntryStore(self.name, self.Entry, entry_init)
 
     @property
     def name(self) -> str:
@@ -58,13 +56,17 @@ class BaseDeck:
     def modelname(self) -> str:
         return f"SubtitleTerms {self.name}"
 
+    @property
+    def Entry(self) -> type[BaseEntry]:
+        return BaseEntry
+
     def model(
         self, collection: anki.collection.Collection
     ) -> anki.collection.NotetypeDict:
         modelmanager = collection.models
         newmodel = modelmanager.new(self.modelname)
-        for field in self.fields:
-            newfield = modelmanager.new_field(field)
+        for field in dataclasses.fields(self.Entry):
+            newfield = modelmanager.new_field(field.name)
             modelmanager.add_field(newmodel, newfield)
 
         recog_template = modelmanager.new_template("Recognition")
@@ -96,11 +98,6 @@ class BaseDeck:
 
         return notetypeid
 
-    @property
-    def Entry(self):
-        valid_identifier = re.sub(r"\W|^(?=\d)", "_", self.name)
-        return collections.namedtuple(valid_identifier, self.fields)
-
     def build(self, subs: list[str], deckname: str):
         """
         From a list of subtitle lines, constructs a deck.
@@ -117,7 +114,7 @@ class BaseDeck:
             entries = self.lookup(segments)
             logger.debug(f"Entry count = {len(entries)}")
             for entry in entries:
-                logger.log(9, entry._asdict())
+                logger.log(9, dataclasses.asdict(entry))
             self.gather(col, entries, deckname)
 
             return col.merge_undo_entries(undo_entry)
@@ -136,7 +133,7 @@ class BaseDeck:
                     word_set[term] = True
         return list(word_set.keys())
 
-    def lookup(self, segments: list[str]):
+    def lookup(self, segments: list[str]) -> list[BaseEntry]:
         """
         Returns matching term dictionary entries.
         """
@@ -149,9 +146,9 @@ class BaseDeck:
                         entries[sub_term] = self.entrystore[sub_term]
             elif term not in entries:
                 entries[term] = self.entrystore[term]
-        return entries.values()
+        return list(entries.values())
 
-    def lookup_fallback(self, term: str):
+    def lookup_fallback(self, term: str) -> list[BaseEntry]:
         """
         Return potentionally less-accurate terms found within the database
         instead of a full lookup failure.

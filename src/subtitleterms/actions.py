@@ -1,3 +1,5 @@
+import dataclasses
+
 from anki.collection import Collection
 from aqt import mw
 from aqt.addons import AddonManager
@@ -138,12 +140,12 @@ def updateNotes() -> None:
 
                 logger.log(9, f"Note to update: {note.fields}")
 
-                index = builder.fields[0]
+                index = "term"
                 if index in note:
                     note_log = [f"\n{note[index]}"]
                     if note[index] in builder.entrystore:
                         entry = builder.entrystore[note[index]]
-                        for field_key, field_val in entry._asdict().items():
+                        for field_key, field_val in dataclasses.asdict(entry).items():
                             if field_key in note and note[field_key] != field_val:
                                 note[field_key] = field_val
                                 note_log.append(f' - Field "{field_key}" updated')

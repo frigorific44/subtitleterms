@@ -1,4 +1,4 @@
-import functools
+import dataclasses
 import gzip
 import re
 import unicodedata
@@ -7,13 +7,18 @@ from collections import defaultdict
 import jieba.posseg
 import requests
 from aqt.addons import AddonManager
-from htpy import div, h1, h2, hr, li, rt, ruby, span, ul
+from htpy import Element, div, h1, h2, hr, li, rt, ruby, span, ul
 
-from .base import BaseDeck
+from .base import BaseDeck, BaseEntry
 
 logger = AddonManager.get_logger("subtitleterms")
 
 tones = ["\u0304", "\u0301", "\u030c", "\u0300", "\u200b"]
+
+
+@dataclasses.dataclass
+class HanEntry(BaseEntry):
+    pinyin: str
 
 
 class ZH_Deck(BaseDeck):
@@ -25,8 +30,8 @@ class ZH_Deck(BaseDeck):
     ]
 
     @property
-    def fields(self):
-        return super().fields + ["pinyin"]
+    def Entry(self) -> type[BaseEntry]:
+        return HanEntry
 
     def segment(self, subs: list[str]) -> list[str]:
         word_set = dict()
@@ -78,7 +83,7 @@ class ZH_Deck(BaseDeck):
         return best_combinations_flat
 
 
-def zh_initialize(Entry, char_set):
+def zh_initialize(Entry: type[HanEntry], char_set) -> dict[str, HanEntry]:
     # Download dictionary text into string
     req = requests.get(
         "https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz"
@@ -86,7 +91,7 @@ def zh_initialize(Entry, char_set):
     dict_text = gzip.decompress(req.content).decode(encoding="utf-8")
     # Entries are not one-to-one with the representative character,
     # so we deal with that first.
-    ce_dict = defaultdict(list)
+    ce_dict: dict[str, list[tuple[str, list[Element], str]]] = defaultdict(list)
     for line in dict_text.split("\n"):
         try:
             if line.startswith("#"):
@@ -110,8 +115,8 @@ def zh_initialize(Entry, char_set):
                 h2[span[other_char], " ", span[pinyin]],
                 ul[(li[sense] for sense in senses)],
             ]
-            entry = Entry(term=key_char, pinyin=pinyin, gloss=gloss)
-            ce_dict[key_char].append(entry)
+            intermediate = (key_char, gloss, pinyin)
+            ce_dict[key_char].append(intermediate)
         except IndexError as err:
             logger.error(f"Unhandled line: {line}")
             logger.error(err)
@@ -145,27 +150,22 @@ def tone_numbers_to_marks(s: str) -> str:
     return unicodedata.normalize("NFC", brackets_exp.sub(syllable_repl, s))
 
 
-def reconcile_entries(Entry, entries):
-    # Set fields that are the same across all dictionary entries.
+def reconcile_entries(
+    Entry: type[HanEntry], intermediaries: list[tuple[str, list[Element], str]]
+):
     # Sort by pinyin, with proper nouns last.
-    entries = sorted(entries, key=lambda t_entry: t_entry.pinyin.swapcase())
+    intermediaries = sorted(intermediaries, key=lambda t_entry: t_entry[2].swapcase())
 
-    def equal_entry_reduce(x, y):
-        reduction = []
-        for i, j in zip(x, y):
-            if i == j:
-                reduction.append(i)
-            elif isinstance(i, str) and isinstance(j, str) and i.lower() == j.lower():
-                reduction.append(i)
-            else:
-                reduction.append("")
-        return reduction
+    # Set the pinyin if it's the same (barring capitalization) for all entries.
+    all_pinyin = intermediaries[0][2]
+    for intermediary in intermediaries[1:]:
+        if all_pinyin.lower() != intermediary[2].lower():
+            all_pinyin = ""
+            break
 
-    equal_entry = list(functools.reduce(equal_entry_reduce, entries))
     # Set gloss.
-    gloss_index = Entry._fields.index("gloss")
-    if len(entries) == 1:
-        equal_entry[gloss_index] = str(div[entries[0][gloss_index][1]])
+    if len(intermediaries) == 1:
+        gloss = str(div[intermediaries[0][1][1]])
     else:
-        equal_entry[gloss_index] = str(div[[entry[gloss_index] for entry in entries]])
-    return Entry(*equal_entry)
+        gloss = str(div[[intermediary[1] for intermediary in intermediaries]])
+    return Entry(intermediaries[0][0], gloss, all_pinyin)
