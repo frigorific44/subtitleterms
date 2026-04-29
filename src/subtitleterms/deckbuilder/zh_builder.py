@@ -83,7 +83,7 @@ class ZH_Deck(BaseDeck):
         return best_combinations_flat
 
 
-def zh_initialize(Entry: type[HanEntry], char_set) -> dict[str, HanEntry]:
+def zh_initialize(char_set) -> dict[str, HanEntry]:
     # Download dictionary text into string
     req = requests.get(
         "https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz"
@@ -120,7 +120,7 @@ def zh_initialize(Entry: type[HanEntry], char_set) -> dict[str, HanEntry]:
         except IndexError as err:
             logger.error(f"Unhandled line: {line}")
             logger.error(err)
-    return {k: reconcile_entries(Entry, v) for k, v in ce_dict.items()}
+    return {k: reconcile_entries(v) for k, v in ce_dict.items()}
 
 
 def tone_numbers_to_marks(s: str) -> str:
@@ -150,9 +150,7 @@ def tone_numbers_to_marks(s: str) -> str:
     return unicodedata.normalize("NFC", brackets_exp.sub(syllable_repl, s))
 
 
-def reconcile_entries(
-    Entry: type[HanEntry], intermediaries: list[tuple[str, list[Element], str]]
-):
+def reconcile_entries(intermediaries: list[tuple[str, list[Element], str]]) -> HanEntry:
     # Sort by pinyin, with proper nouns last.
     intermediaries = sorted(intermediaries, key=lambda t_entry: t_entry[2].swapcase())
 
@@ -168,4 +166,4 @@ def reconcile_entries(
         gloss = str(div[intermediaries[0][1][1]])
     else:
         gloss = str(div[[intermediary[1] for intermediary in intermediaries]])
-    return Entry(intermediaries[0][0], gloss, all_pinyin)
+    return HanEntry(intermediaries[0][0], gloss, all_pinyin)

@@ -10,11 +10,11 @@ logger = AddonManager.get_logger("subtitleterms")
 builder_tuples: list[tuple[str, BaseDeck]] = [
     (
         f"{localization['zh-Hans']} > {localization['en']}",
-        ZH_Deck("zh-Hans", "en", lambda x: zh_initialize(x, "simplified")),
+        ZH_Deck("zh-Hans", "en", lambda: zh_initialize("simplified")),
     ),
     (
         f"{localization['zh-Hant']} > {localization['en']}",
-        ZH_Deck("zh-Hant", "en", lambda x: zh_initialize(x, "traditional")),
+        ZH_Deck("zh-Hant", "en", lambda: zh_initialize("traditional")),
     ),
 ]
 builders: dict[str, BaseDeck] = {

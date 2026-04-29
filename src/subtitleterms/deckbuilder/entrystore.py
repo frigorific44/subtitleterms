@@ -21,7 +21,7 @@ class EntryStore(Mapping):
         self,
         identifier: str,
         entry: type[BaseEntry],
-        get_entries: Callable[type[BaseEntry], dict[str, BaseEntry]],
+        get_entries: Callable[[], dict[str, BaseEntry]],
     ):
         self.Entry = entry
         self.dirpath = pathlib.Path(__file__).parent.joinpath("data")
@@ -45,7 +45,7 @@ class EntryStore(Mapping):
         """
         Attempts to retrieve up-to-date entries and persist them to disk and memory.
         """
-        entries = self.get_entries(self.Entry)
+        entries = self.get_entries()
         # get_entries should return None on failure so we don't overwrite
         # with blank data.
         if entries:
