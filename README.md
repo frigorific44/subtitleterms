@@ -21,7 +21,7 @@ To make full use of the plug-in, [FFmpeg](https://ffmpeg.org/download.html) must
 
 The dialog to create a deck can be brought up with `File > SubtitleTerms: Import` in the toolbar.
 
-- **File**: The file from which cards will be generated, which can either by a video container or text file.
+- **File**: The file from which cards will be generated, which can either be a video container or text file.
 
 - **Deck Name**: The file name will be inserted for convenience, but this can be edited.
 
@@ -71,7 +71,7 @@ While the current set of translation dictionaries offered is limited, my hope is
 
 ### Localizing/Translating
 
-While smaller in scope than the Anki platform, SubtitleTerms does support localization, targeting the same locales as available through Anki. Localizations are contained within [localizations.py](src/subtitleterms/i18n/localizations.py). In general, creating a new localization will involve copying the annotated English localization dictionary and modifying the language tag ('en-US') to the target locale, and modifying the dictionary keys with their localization. More detailed guidance will likely be contained within the localization file. As this process requires familiarity with Git and Python in order to make modifications and submit a pull request, contributions in the form of opening an issue with the 'localization' label containing the localizations in the body are also welcome.
+While smaller in scope than the Anki platform, SubtitleTerms does support localization, targeting the same locales as available through Anki. Localizations are contained within [localizations.py](src/subtitleterms/i18n/localizations.py). In general, creating a new localization will involve copying the annotated English localization dictionary and modifying the language tag ('en-US') to the target locale, and modifying the dictionary keys with their localization. More detailed guidance will likely be contained within the localization file. As this process requires familiarity with Git and Python in order to make modifications and submit a pull request, contributions in the form of opening an issue with the 'localization' label containing the localizations in the body are also welcome. GNU `gettext` powered localization is planned for a future release.
 
 ## Development
 
