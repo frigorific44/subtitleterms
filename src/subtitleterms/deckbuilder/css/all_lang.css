@@ -15,12 +15,18 @@ hr {
 }
 
 h1 {
-  font-size: 36px;
+  font-size: 48px;
+  font-weight: normal;
   text-align: center;
+}
+
+rt {
+  font-size: 20px;
 }
 
 h2 {
   font-size: 24px;
+  font-weight: normal;
   text-decoration-line: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 0.5em;
