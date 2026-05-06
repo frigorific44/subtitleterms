@@ -1,6 +1,18 @@
 # SubtitleTerms
 
-An Anki plug-in for turning subtitles—or more broadly any text document—into flashcards for language learning. Once using SubtitleTerms cards, you can learn a language through your show of choice and generate cards episode by episode, adding newly encountered terms to your repoitoire as you gradually develop mastery over the language.
+An Anki plug-in for turning subtitles—or more broadly any text document—into flashcards for language learning. Once using SubtitleTerms cards, you can learn a language through your TV show of choice and generate cards episode by episode, adding newly encountered terms to your repoitoire as you gradually develop mastery over the language.
+
+<div>
+  <img src="images/dialog_example.webp" alt="Dialog for creating notes with SubtitleTerms." width="30%" align="top">
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  <img src="images/note_concise_example.webp" alt="Anki card for 真" width="30%">
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  <img src="images/note_long_example.webp" alt="Anki card for 了" width="30%">
+</div>
 
 ### Currently Supported Language Pairs
 
@@ -11,7 +23,7 @@ An Anki plug-in for turning subtitles—or more broadly any text document—into
 
 The plug-in can be installed through the normal means by using the in-app plug-in search, or copying the code:
 
-1790506305
+`1790506305`
 
 To make full use of the plug-in, [FFmpeg](https://ffmpeg.org/download.html) must be installed and present on the PATH. FFmpeg is a free and open-source tool for handling multimedia files, and is used to extract subtitles from videos. Many guides for installing FFmpeg and adding it to your PATH are available. If you don't wish to install FFmpeg or are unable to, subtitles can be extracted into a `.srt` (SubRip Text) formatted file with another tool, and imported with SubtitleTerms from the text file.
 
