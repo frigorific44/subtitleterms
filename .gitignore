@@ -18,3 +18,4 @@ src/**/deckbuilder/data
 
 # Build artifacts
 src/*/vendor
+*.mo

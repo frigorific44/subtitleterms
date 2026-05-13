@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026
+# This file is distributed under the same license as the SubtitleTerms package.
+# Derek Enlow <derekenlow@gmail.com>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-12 21:23-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: __init__.py:28 deckbuilder/base.py:107
+msgid "Import"
+msgstr "Import"
+
+#: __init__.py:32 actions.py:58
+msgid "Update Note Types"
+msgstr "Update Note Types"
+
+#: __init__.py:36 actions.py:126
+msgid "Update Notes"
+msgstr "Update Notes"
+
+#: builders.py:12
+msgid "zh-Hans > en"
+msgstr "Chinese (Simplified) > English"
+
+#: builders.py:16
+msgid "zh-Hant > en"
+msgstr "Chinese (Traditional) > English"
+
+#: ui/__init__.py:46
+msgid "File"
+msgstr "File"
+
+#: ui/__init__.py:47
+msgid "Browse"
+msgstr "Browse"
+
+#: ui/__init__.py:48
+msgid "Deck Name"
+msgstr "Deck Name"
+
+#: ui/__init__.py:49
+msgid "Subtitle"
+msgstr "Subtitle"
+
+#: ui/__init__.py:50
+msgid "Dictionary"
+msgstr "Dictionary"

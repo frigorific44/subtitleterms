@@ -7,7 +7,7 @@ from aqt.addons import AddonManager
 from aqt.operations import CollectionOp
 from htpy import div, h1, hr
 
-from ..i18n import localization
+from ..i18n import _
 from .entrystore import BaseEntry, EntryStore
 
 logger = AddonManager.get_logger("subtitleterms")
@@ -104,9 +104,7 @@ class BaseDeck:
         """
 
         def buildOp(col: anki.collection.Collection):
-            undo_entry = col.add_custom_undo_entry(
-                f"SubtitleTerms: {localization['toolbar_import']}"
-            )
+            undo_entry = col.add_custom_undo_entry(f"SubtitleTerms: {_('Import')}")
 
             logger.debug(f"Subtitle count = {len(subs)}")
             segments = self.segment(subs)

@@ -8,7 +8,7 @@ from aqt.utils import showText
 
 from .builders import builders
 from .ext import ext, parse_srt
-from .i18n import localization
+from .i18n import _
 from .ui import ImportDialog, ImportSettings
 
 logger = AddonManager.get_logger("subtitleterms")
@@ -55,7 +55,7 @@ def updateModels() -> None:
 
     def updateModelsOp(collection: Collection, log: list[str]):
         undo_entry = collection.add_custom_undo_entry(
-            f"SubtitleTerms: {localization['toolbar_update_models']}"
+            f"SubtitleTerms: {_('Update Note Types')}"
         )
         for builder in builders.values():
             modelmanager = collection.models
@@ -123,7 +123,7 @@ def updateNotes() -> None:
 
     def updateNotesOp(collection: Collection, log: list[str]):
         undo_entry = collection.add_custom_undo_entry(
-            f"SubtitleTerms: {localization['toolbar_update_notes']}"
+            f"SubtitleTerms: {_('Update Notes')}"
         )
         for builder in builders.values():
             modelmanager = collection.models

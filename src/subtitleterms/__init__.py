@@ -11,7 +11,7 @@ vendor_dir = os.path.join(parent_dir, "vendor")
 sys.path.append(vendor_dir)
 
 from .actions import importDeck, updateModels, updateNotes  # noqa: E402
-from .i18n import localization  # noqa: E402
+from .i18n import _  # noqa: E402
 
 # Don't try to set up if running tests.
 if "pytest" not in sys.modules:
@@ -25,16 +25,14 @@ if "pytest" not in sys.modules:
     logger.info(f"SubtitleTerms log level is {logger.getEffectiveLevel()}")
 
     # Create menu actions.
-    actionImport = QAction(f"SubtitleTerms: {localization['toolbar_import']}", mw)
+    actionImport = QAction(f"SubtitleTerms: {_('Import')}", mw)
     qconnect(actionImport.triggered, importDeck)
     mw.form.menuCol.insertAction(mw.form.menuCol.actions()[-1], actionImport)
 
-    actionModels = QAction(
-        f"SubtitleTerms: {localization['toolbar_update_models']}", mw
-    )
+    actionModels = QAction(f"SubtitleTerms: {_('Update Note Types')}", mw)
     qconnect(actionModels.triggered, updateModels)
     mw.form.menuTools.addAction(actionModels)
 
-    actionNotes = QAction(f"SubtitleTerms: {localization['toolbar_update_notes']}")
+    actionNotes = QAction(f"SubtitleTerms: {_('Update Notes')}")
     qconnect(actionNotes.triggered, updateNotes)
     mw.form.menuTools.addAction(actionNotes)
