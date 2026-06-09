@@ -64,9 +64,16 @@ ul {
 /* General language-specific styling. */
 /* TODO: Proper font-family hierarchy. */
 .zh-Hans {
-  font-family: "Noto Sans CJK SC", sans-serif;
+  font-family:
+    "PingFang SC", DengXian, "Source Han Sans SC", "Source Han Sans CN",
+    "Noto Sans CJK SC", "Microsoft Yahei", SimHei, SimSun, NSimSun, SimSun-ExtB,
+    Song, "Heiti SC", HanaMinA, HanaMinB, sans-serif;
 }
 
 .zh-Hant {
-  font-family: "Noto Sans CJK TC", sans-serif;
+  font-family:
+    "PingFang TC", "Source Han Sans TC", "Source Han Sans TW",
+    "Noto Sans CJK TC", "Microsoft Jhenghei", MOESongUN, PMingLiU,
+    PMingLiU-ExtB, MingLiU, MingLiU-ExtB, Ming, "Heiti TC", HanaMinA, HanaMinB,
+    sans-serif;
 }
