@@ -1,3 +1,4 @@
+from shutil import rmtree
 import subprocess
 import shutil
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
@@ -5,8 +6,7 @@ from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 
 class CustomBuildHook(BuildHookInterface):
     def clean(self, versions):
-        # TODO: Clean up vendors.
-        pass
+        self.uninstall_vendors()
 
     def initialize(self, version, build_data):
         self.install_vendors()
@@ -26,3 +26,7 @@ class CustomBuildHook(BuildHookInterface):
             print("uv is not found in PATH.")
         uv_args = ["uv", "pip", "install", "-t", vendor_dir, *vendor]
         subprocess.run(uv_args)
+
+    def uninstall_vendors(self):
+        vendor_dir = self.config["vendor-directory"]
+        rmtree(vendor_dir)
