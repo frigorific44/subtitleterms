@@ -1,7 +1,7 @@
 [project]
 name = "subtitleterms"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.2.0"
+description = "Anki plug-in to extract and convert subtitles into usable notes for language-learning."
 readme = "README.md"
 authors = [{ name = "Derek Enlow", email = "derekenlow@gmail.com" }]
 requires-python = ">=3.13"
@@ -16,18 +16,20 @@ dependencies = [
 dev = ["hatchling>=1.28.0", "pytest>=9.0.2"]
 
 [build-system]
-requires = ["hatchling", "hatch-zipped-directory"]
+requires = ["hatchling", "hatch-gettext"]
 build-backend = "hatchling.build"
 
 [tool.hatch.envs.default]
 installer = "uv"
 
-[tool.hatch.build.targets.zipped-directory]
+[tool.hatch.build.targets.sdist]
 install-name = ""
-artifacts = ["src/*/vendor/*"]
-[tool.hatch.build.targets.zipped-directory.sources]
+artifacts = ["src/*/vendor/*", "*.mo"]
+[tool.hatch.build.targets.sdist.sources]
 "src/subtitleterms" = ""
-[tool.hatch.build.targets.zipped-directory.hooks.custom]
+[tool.hatch.build.targets.sdist.hooks.gettext]
+locale-directory = "src/subtitleterms/locales"
+[tool.hatch.build.targets.sdist.hooks.custom]
 path = "vendors.py"
 
 [tool.vendors]
