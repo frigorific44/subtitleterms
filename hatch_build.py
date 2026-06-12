@@ -9,6 +9,7 @@ from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 class CustomBuildHook(BuildHookInterface):
     def clean(self, versions):
         self.uninstall_vendors()
+        self.clean_dist()
 
     def initialize(self, version, build_data):
         self.install_vendors()
@@ -40,6 +41,13 @@ class CustomBuildHook(BuildHookInterface):
         if vendor_dir.is_dir() and vendor_dir.exists():
             shutil.rmtree(vendor_dir)
 
+    def clean_dist(self):
+        for child in Path(self.directory).iterdir():
+            if child.suffix == ".zip":
+                child.unlink()
+            if child.is_dir():
+                shutil.rmtree(child)
+
     def tar_to_zip(self, path_str):
         path = Path(path_str)
         if self.target_name == "sdist" and path.name.endswith(".tar.gz"):
@@ -47,8 +55,6 @@ class CustomBuildHook(BuildHookInterface):
                 tar.extractall(path.parent, filter="data")
             artifact_name = path.name[: -len(".tar.gz")]
             extracted_to = path.parent.joinpath(artifact_name + "/")
-            # print(artifact_name)
-            # print(str(path)[: len(".tar.gz")])
             if extracted_to.exists() and extracted_to.is_dir():
                 shutil.make_archive(
                     str(path.with_name(artifact_name)),
