@@ -7,6 +7,10 @@ from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 
 
 class CustomBuildHook(BuildHookInterface):
+    @property
+    def build_test(self):
+        return self.config.get("build-test-directory") or self.metadata.name + "test"
+
     def clean(self, versions):
         self.uninstall_vendors()
         self.clean_dist()
@@ -61,3 +65,6 @@ class CustomBuildHook(BuildHookInterface):
                     "zip",
                     extracted_to,
                 )
+            build_test_directory = path.parent.joinpath(self.build_test)
+            if not build_test_directory.exists():
+                extracted_to.rename(build_test_directory)
