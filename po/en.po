@@ -19,11 +19,11 @@ msgstr ""
 
 #: ../src/subtitleterms/deckbuilder/base.py:110
 msgid "Import"
-msgstr "Import"
+msgstr ""
 
 #: ../src/subtitleterms/actions.py:58
 msgid "Update Note Types"
-msgstr "Update Note Types"
+msgstr ""
 
 #: ../src/subtitleterms/actions.py:76
 msgid "style sheet updated"
@@ -54,7 +54,7 @@ msgstr ""
 
 #: ../src/subtitleterms/actions.py:135
 msgid "Update Notes"
-msgstr "Update Notes"
+msgstr ""
 
 #: ../src/subtitleterms/actions.py:146
 #, python-brace-format
@@ -85,20 +85,20 @@ msgstr "Chinese (Traditional) > English"
 #. Translate labels.
 #: ../src/subtitleterms/ui/__init__.py:46
 msgid "File"
-msgstr "File"
+msgstr ""
 
 #: ../src/subtitleterms/ui/__init__.py:47
 msgid "Browse"
-msgstr "Browse"
+msgstr ""
 
 #: ../src/subtitleterms/ui/__init__.py:48
 msgid "Deck Name"
-msgstr "Deck Name"
+msgstr ""
 
 #: ../src/subtitleterms/ui/__init__.py:49
 msgid "Subtitle"
-msgstr "Subtitle"
+msgstr ""
 
 #: ../src/subtitleterms/ui/__init__.py:50
 msgid "Dictionary"
-msgstr "Dictionary"
+msgstr ""
