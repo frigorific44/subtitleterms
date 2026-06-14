@@ -1,58 +1,104 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2026
-# This file is distributed under the same license as the SubtitleTerms package.
-# Derek Enlow <derekenlow@gmail.com>, 2026.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-12 21:23-0600\n"
+"POT-Creation-Date: 2026-06-13 21:13-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: __init__.py:28 deckbuilder/base.py:107
+#: ../src/subtitleterms/deckbuilder/base.py:110
 msgid "Import"
 msgstr ""
 
-#: __init__.py:32 actions.py:58
+#: ../src/subtitleterms/actions.py:58
 msgid "Update Note Types"
 msgstr ""
 
-#: __init__.py:36 actions.py:126
+#: ../src/subtitleterms/actions.py:76
+msgid "style sheet updated"
+msgstr ""
+
+#: ../src/subtitleterms/actions.py:87
+#, python-brace-format
+msgid "\"{template_name}\" front template updated"
+msgstr ""
+
+#: ../src/subtitleterms/actions.py:95
+#, python-brace-format
+msgid "\"{template_name}\" back template updated"
+msgstr ""
+
+#: ../src/subtitleterms/actions.py:108
+#, python-brace-format
+msgid "field \"{field_name}\" added"
+msgstr ""
+
+#: ../src/subtitleterms/actions.py:112
+msgid "no properties updated"
+msgstr ""
+
+#: ../src/subtitleterms/actions.py:122
+msgid "Models updated:"
+msgstr ""
+
+#: ../src/subtitleterms/actions.py:135
 msgid "Update Notes"
 msgstr ""
 
-#: builders.py:12
+#: ../src/subtitleterms/actions.py:146
+#, python-brace-format
+msgid "\"{model_name}\" entries refreshed."
+msgstr ""
+
+#: ../src/subtitleterms/actions.py:167
+#, python-brace-format
+msgid "field \"{field_key}\" updated"
+msgstr ""
+
+#: ../src/subtitleterms/actions.py:172
+msgid "term not found in dictionary"
+msgstr ""
+
+#: ../src/subtitleterms/actions.py:185
+msgid "Notes Updated:"
+msgstr ""
+
+#: ../src/subtitleterms/builders.py:12
 msgid "zh-Hans > en"
 msgstr ""
 
-#: builders.py:16
+#: ../src/subtitleterms/builders.py:16
 msgid "zh-Hant > en"
 msgstr ""
 
-#: ui/__init__.py:46
+#. Translate labels.
+#: ../src/subtitleterms/ui/__init__.py:46
 msgid "File"
 msgstr ""
 
-#: ui/__init__.py:47
+#: ../src/subtitleterms/ui/__init__.py:47
 msgid "Browse"
 msgstr ""
 
-#: ui/__init__.py:48
+#: ../src/subtitleterms/ui/__init__.py:48
 msgid "Deck Name"
 msgstr ""
 
-#: ui/__init__.py:49
+#: ../src/subtitleterms/ui/__init__.py:49
 msgid "Subtitle"
 msgstr ""
 
-#: ui/__init__.py:50
+#: ../src/subtitleterms/ui/__init__.py:50
 msgid "Dictionary"
 msgstr ""

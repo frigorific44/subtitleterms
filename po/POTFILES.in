@@ -1,0 +1,5 @@
+src/subtitleterms/deckbuilder/base.py
+src/subtitleterms/actions.py
+src/subtitleterms/builders.py
+src/subtitleterms/ui/__init__.py
+

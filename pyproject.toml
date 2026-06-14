@@ -29,6 +29,9 @@ artifacts = ["src/*/vendor/*", "*.mo"]
 "src/subtitleterms" = ""
 [tool.hatch.build.targets.sdist.hooks.gettext]
 locale-directory = "src/subtitleterms/locales"
+regenerate-template = true
+identify-left-out = true
+show-report = true
 [tool.hatch.build.targets.sdist.hooks.custom]
 path = "hatch_build.py"
 vendor-directory = "src/subtitleterms/vendor"
