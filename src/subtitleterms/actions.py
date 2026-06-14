@@ -73,7 +73,7 @@ def updateModels() -> None:
             # Update CSS
             if model["css"] != ref["css"]:
                 model["css"] = ref["css"]
-                model_log.append(" - CSS updated")
+                model_log.append(" - " + _("style sheet updated"))
 
             # Update templates.
             # TODO: Something less manual than this, but I've been burned before.
@@ -83,12 +83,18 @@ def updateModels() -> None:
                         if model["tmpls"][j]["qfmt"] != ref["tmpls"][i]["qfmt"]:
                             model["tmpls"][j]["qfmt"] = ref["tmpls"][i]["qfmt"]
                             model_log.append(
-                                f' - "{ref["tmpls"][i]["name"]}" qfmt updated'
+                                " - "
+                                + _('"{template_name}" front template updated').format(
+                                    template_name=ref["tmpls"][i]["name"]
+                                )
                             )
                         if model["tmpls"][j]["afmt"] != ref["tmpls"][i]["afmt"]:
                             model["tmpls"][j]["afmt"] = ref["tmpls"][i]["afmt"]
                             model_log.append(
-                                f' - "{ref["tmpls"][i]["name"]}" afmt updated'
+                                " - "
+                                + _('"{template_name}" back template updated').format(
+                                    template_name=ref["tmpls"][i]["name"]
+                                )
                             )
 
             # Add missing fields.
@@ -97,10 +103,13 @@ def updateModels() -> None:
             ):
                 missing_field = modelmanager.new_field(field_name)
                 modelmanager.add_field(model, missing_field)
-                model_log.append(f' - field "{field_name}" added')
+                model_log.append(
+                    " - "
+                    + _('field "{field_name}" added').format(field_name=field_name)
+                )
 
             if len(model_log) == 1:
-                model_log.append(" - No properties updated")
+                model_log.append(" - " + _("no properties updated"))
             log.extend(model_log)
             modelmanager.update_dict(model)
 
@@ -110,7 +119,7 @@ def updateModels() -> None:
         log_str = "\n".join(log)
         showText(log_str, plain_text_edit=True)
 
-    log = ["SubtitleTerms", "\nModels Updated:"]
+    log = ["SubtitleTerms\n", _("Models updated:")]
     op = CollectionOp(parent=mw, op=lambda col: updateModelsOp(col, log))
     op.success(lambda result: updateModelsSuccess(result, log)).run_in_background()
 
@@ -132,7 +141,12 @@ def updateNotes() -> None:
             if not notetypeid:
                 continue
             builder.entrystore.update_cache()
-            log.append(f'\n"{builder.modelname}" entries refreshed.')
+            log.append(
+                "\n"
+                + _('"{model_name}" entries refreshed.').format(
+                    model_name=builder.modelname
+                )
+            )
 
             changed_notes = []
             for noteid in modelmanager.nids(notetypeid):
@@ -148,9 +162,14 @@ def updateNotes() -> None:
                         for field_key, field_val in dataclasses.asdict(entry).items():
                             if field_key in note and note[field_key] != field_val:
                                 note[field_key] = field_val
-                                note_log.append(f' - Field "{field_key}" updated')
+                                note_log.append(
+                                    " - "
+                                    + _('field "{field_key}" updated').format(
+                                        field_key=field_key
+                                    )
+                                )
                     else:
-                        note_log.append(" - Term not found in dictionary")
+                        note_log.append(" - " + _("term not found in dictionary"))
                     if len(note_log) > 1:
                         log.extend(note_log)
 
@@ -163,6 +182,6 @@ def updateNotes() -> None:
         log_str = "\n".join(log)
         showText(log_str, plain_text_edit=True)
 
-    log = ["SubtitleTerms", "\nNotes Updated:"]
+    log = ["SubtitleTerms\n", _("Notes Updated:")]
     op = CollectionOp(parent=mw, op=lambda col: updateNotesOp(col, log))
     op.success(lambda result: updateNotesSuccess(result, log)).run_in_background()
