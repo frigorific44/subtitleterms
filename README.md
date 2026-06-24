@@ -1,6 +1,6 @@
 # SubtitleTerms
 
-An Anki plug-in for turning subtitles—or more broadly any text document—into flashcards for language learning. Once using SubtitleTerms cards, you can learn a language through your TV show of choice and generate cards episode by episode, adding newly encountered terms to your repoitoire as you gradually develop mastery over the language.
+An Anki plug-in for turning subtitles—or more broadly any text document—into flashcards for language learning. Once using SubtitleTerms cards, you can learn a language through your TV show of choice and generate cards episode by episode, adding newly encountered terms to your repertoire as you gradually develop mastery over the language.
 
 <div>
   <img src="images/dialog_example.webp" alt="Dialog for creating notes with SubtitleTerms." width="30%" align="top">
@@ -39,13 +39,13 @@ The dialog to create a deck can be brought up with `File > SubtitleTerms: Import
 
 - **Subtitle**: If the file selected is a video container with subtitles, this will be a drop-down list from which the relevant subtitle stream can be selected. Otherwise, this option is irrelevant.
 
-- **Dictionary**: A dropdown containing the supported translation/bilingual dictionaries of SubtitleTerms. For expanding this support, see [Contributing](#contributing). The language on the left will be the language of the subtitles/text which you're trying to learn, and the language on the right is the language terms will be translated to.
+- **Dictionary**: A drop-down containing the supported translation/bilingual dictionaries of SubtitleTerms. For expanding this support, see [Contributing](#contributing). The language on the left will be the language of the subtitles/text which you're trying to learn, and the language on the right is the language terms will be translated to.
 
 On first use, it may take some time as the relevant dictionary is downloaded, in addition to the other processes that allow the plug-in to work, so please be patient.
 
 #### Subtitled Videos
 
-When a video file is selected in the import dialog, SubtitleTerms will attempt to glean the subtitles available, and the relevant one can be selected from the dropdown. As per [Installation](#installation), this is reliant upon FFmpeg being installed and in the PATH. Depending on how the subtitles are stored, such as if the subtitle streams are stored as bitmap images, it may not be possible for FFmpeg to extract the text.
+When a video file is selected in the import dialog, SubtitleTerms will attempt to glean the subtitles available, and the relevant one can be selected from the drop-down. As per [Installation](#installation), this is reliant upon FFmpeg being installed and in the PATH. Depending on how the subtitles are stored, such as if the subtitle streams are stored as bitmap images, it may not be possible for FFmpeg to extract the text.
 
 Depending on the video selected, it can take a long time to extract the subtitles. This is a process bounded by your own hardware, so please be patient.
 
@@ -67,7 +67,7 @@ While the main burden of creating notes should be borne by the plug-in, there ma
 
 #### Converting Existing Cards
 
-Updating notes and note types is done by name, which allows for the possibility of converting pre-existing notes. To do so, you at least need to know the name of the note type you're targeting.
+Updating notes and note types is done by name, which allows for the possibility of converting preexisting notes. To do so, you at least need to know the name of the note type you're targeting.
 
 In order to get the note type name used by SubtitleTerms, importing to generate some temporary cards is the easiest way. Otherwise, the format is `SubtitleTerms {lang_from}_2_{lang_to}`, where `{lang_from}` and `{lang_to}` are the IETF formatted language tags for the two languages, such that Chinese (Simplified) to English would be `SubtitleTerms zh-Hans_2_en`.
 
