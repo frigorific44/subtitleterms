@@ -13,7 +13,7 @@ from .base import BaseDeck, BaseEntry
 
 logger = AddonManager.get_logger("subtitleterms")
 
-tones = ["\u0304", "\u0301", "\u030c", "\u0300", "\u200b"]
+tones = ["\u0304", "\u0301", "\u030c", "\u0300", ""]
 
 
 @dataclasses.dataclass
