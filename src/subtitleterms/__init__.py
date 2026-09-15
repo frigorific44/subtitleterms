@@ -10,8 +10,8 @@ parent_dir = os.path.abspath(os.path.dirname(__file__))
 vendor_dir = os.path.join(parent_dir, "vendor")
 sys.path.append(vendor_dir)
 
-from .actions import importDeck, updateModels, updateNotes  # noqa: E402
-from .i18n import _  # noqa: E402
+from .actions import importDeck, updateModels, updateNotes
+from .i18n import _
 
 # Don't try to set up if running tests.
 if "pytest" not in sys.modules:

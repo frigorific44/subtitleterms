@@ -39,12 +39,11 @@ class ZH_Deck(BaseDeck):
         return HanEntry
 
     def segment(self, subs: list[str]) -> list[str]:
-        word_set = dict()
+        word_set = {}
         for sub in subs:
             for term, tag in jieba.posseg.cut(sub):
-                if tag not in set(["x"]) and not term.isdigit():
-                    if term not in word_set:
-                        word_set[term] = True
+                if tag not in {"x"} and not term.isdigit() and term not in word_set:
+                    word_set[term] = True
         return list(word_set)
 
     def lookup_fallback(self, term: str):

@@ -25,12 +25,12 @@ class CustomBuildHook(BuildHookInterface):
         dependencies = self.metadata.core.dependencies
         ignore = self.config["ignore-dependencies"]
         vendor_dir = self.config["vendor-directory"]
-        vendor = [p for p in dependencies if all([ig not in p for ig in ignore])]
+        vendor = [p for p in dependencies if all(ig not in p for ig in ignore)]
         print(" ".join(vendor))
         if not shutil.which("uv"):
             print("uv is not found in PATH.")
         uv_args = ["uv", "pip", "install", "-t", vendor_dir, *vendor]
-        subprocess.run(uv_args)
+        subprocess.run(uv_args, check=True)
 
     def uninstall_vendors(self):
         vendor_dir = Path(self.config["vendor-directory"])

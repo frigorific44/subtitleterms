@@ -127,7 +127,7 @@ class BaseDeck:
         """
         Segments subtitle lines into possible memorization terms.
         """
-        word_set = dict()
+        word_set = {}
         for sub in subs:
             for term in sub.split():
                 if term not in word_set:

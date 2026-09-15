@@ -33,7 +33,12 @@ class Ui_ImportDialog(object):
         self.nameLineEdit = QtWidgets.QLineEdit(parent=ImportDialog)
         self.nameLineEdit.setObjectName("nameLineEdit")
         self.verticalLayout.addWidget(self.nameLineEdit)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(
+            20,
+            40,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         self.verticalLayout.addItem(spacerItem)
         self.subtitleLabel = QtWidgets.QLabel(parent=ImportDialog)
         self.subtitleLabel.setEnabled(False)
@@ -43,7 +48,12 @@ class Ui_ImportDialog(object):
         self.subtitleComboBox.setEnabled(False)
         self.subtitleComboBox.setObjectName("subtitleComboBox")
         self.verticalLayout.addWidget(self.subtitleComboBox)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            20,
+            40,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         self.verticalLayout.addItem(spacerItem1)
         self.dictionaryLabel = QtWidgets.QLabel(parent=ImportDialog)
         self.dictionaryLabel.setObjectName("dictionaryLabel")
@@ -51,17 +61,25 @@ class Ui_ImportDialog(object):
         self.dictionaryComboBox = QtWidgets.QComboBox(parent=ImportDialog)
         self.dictionaryComboBox.setObjectName("dictionaryComboBox")
         self.verticalLayout.addWidget(self.dictionaryComboBox)
-        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            20,
+            40,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         self.verticalLayout.addItem(spacerItem2)
         self.buttonBox = QtWidgets.QDialogButtonBox(parent=ImportDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+            | QtWidgets.QDialogButtonBox.StandardButton.Ok
+        )
         self.buttonBox.setObjectName("buttonBox")
         self.verticalLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(ImportDialog)
-        self.buttonBox.accepted.connect(ImportDialog.accept) # type: ignore
-        self.buttonBox.rejected.connect(ImportDialog.reject) # type: ignore
+        self.buttonBox.accepted.connect(ImportDialog.accept)  # type: ignore
+        self.buttonBox.rejected.connect(ImportDialog.reject)  # type: ignore
         QtCore.QMetaObject.connectSlotsByName(ImportDialog)
         ImportDialog.setTabOrder(self.fileLineEdit, self.filePushButton)
 
