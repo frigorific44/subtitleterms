@@ -46,7 +46,7 @@ class ZH_Deck(BaseDeck):
                     word_set[term] = True
         return list(word_set)
 
-    def lookup_fallback(self, term: str):
+    def lookup_fallback(self, term: str) -> list[str]:
         # Calculate combinations of substrings contained in the dictionary.
         def defined_combinations(runes: str) -> list[list[str]]:
             if runes == "":
@@ -172,4 +172,4 @@ def reconcile_entries(intermediaries: list[tuple[str, list[Element], str]]) -> H
         gloss = str(div[intermediaries[0][1][1]])
     else:
         gloss = str(div[[intermediary[1] for intermediary in intermediaries]])
-    return HanEntry(intermediaries[0][0], gloss, all_pinyin)
+    return HanEntry(intermediaries[0][0], gloss, 1, all_pinyin)

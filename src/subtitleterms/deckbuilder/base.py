@@ -139,17 +139,21 @@ class BaseDeck:
         Returns matching term dictionary entries.
         """
         # Insertion order should be preserved.
-        entries = {}
+        entries: dict[str, BaseEntry] = {}
         for term in segments:
             if term not in self.entrystore:
                 for sub_term in self.lookup_fallback(term):
                     if sub_term not in entries:
                         entries[sub_term] = self.entrystore[sub_term]
+                    else:
+                        entries[sub_term].frequency += 1
             elif term not in entries:
                 entries[term] = self.entrystore[term]
+            else:
+                entries[term].frequency += 1
         return list(entries.values())
 
-    def lookup_fallback(self, term: str) -> list[BaseEntry]:
+    def lookup_fallback(self, term: str) -> list[str]:
         """
         Return potentionally less-accurate terms found within the database
         instead of a full lookup failure.
@@ -170,11 +174,17 @@ class BaseDeck:
             LangNote(collection, model_id, list(dataclasses.astuple(entry)))
             for entry in entries
         ]
-        requests = [
-            anki.collection.AddNoteRequest(note, new_deck_id)
-            for note in notes
-            if not note.fields_check()
-        ]
+        # requests = [
+        #     anki.collection.AddNoteRequest(note, new_deck_id)
+        #     for note in notes
+        #     if not note.fields_check()
+        # ]
+        requests, skipped = [], []
+        for note in notes:
+            if not note.fields_check():
+                requests.append(anki.collection.AddNoteRequest(note, new_deck_id))
+            else:
+                skipped.append(note)
 
         result_msg = f"{len(requests)} note"
         result_msg += "s" if len(requests) > 1 else ""
@@ -188,4 +198,4 @@ class BaseDeck:
         logger.info(result_msg)
 
         collection.add_notes(requests)
-        return new_deck
+        return skipped

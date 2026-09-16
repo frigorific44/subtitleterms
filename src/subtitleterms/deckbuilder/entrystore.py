@@ -9,6 +9,7 @@ from collections.abc import Callable, Mapping
 class BaseEntry:
     term: str
     gloss: str
+    frequency: int
 
 
 class EntryStore(Mapping):

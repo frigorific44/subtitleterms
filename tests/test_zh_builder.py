@@ -1,4 +1,4 @@
-from subtitleterms.deckbuilder.zh_builder import tone_numbers_to_marks, tones
+from subtitleterms.deckbuilder.zh_builder import tone_numbers_to_marks
 
 
 def test_tone_numbers_to_marks_umlaut():
