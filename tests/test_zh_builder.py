@@ -1,4 +1,31 @@
-from subtitleterms.deckbuilder.zh_builder import tone_numbers_to_marks
+from subtitleterms.deckbuilder.zh_builder import (
+    HanEntry,
+    ZH_Deck,
+    tone_numbers_to_marks,
+)
+
+
+def zh_init():
+    return {
+        "张": HanEntry("张", "张的定义", 1, "zhang1"),
+        "茵": HanEntry("茵", "茵的定义", 1, "yin1"),
+    }
+
+
+deck = ZH_Deck("zh-Hans", "en", zh_init)
+
+
+def test_segment():
+    answer = set(deck.segment(["我喜欢蛋糕。"]))
+    for segment in ["我", "喜欢", "蛋糕"]:
+        assert segment in answer
+    assert "。" not in answer
+
+
+def test_lookup_fallback():
+    deck.entrystore.update_cache()
+    a = deck.lookup_fallback("张茵")
+    assert (a[0] == "张" and a[1] == "茵") or (a[0] == "茵" and a[1] == "张")
 
 
 def test_tone_numbers_to_marks_umlaut():

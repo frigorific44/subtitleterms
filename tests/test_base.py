@@ -10,6 +10,7 @@ base_deck = BaseDeck("from", "to", base_init)
 
 
 def test_lookup_frequency_counts():
+    base_deck.entrystore.update_cache()
     answer = base_deck.lookup(["A", "B", "B", "A", "B", "C"])
     counts = {entry.term: entry.frequency for entry in answer}
     assert counts["A"] == 2
