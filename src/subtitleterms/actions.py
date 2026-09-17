@@ -35,7 +35,7 @@ def importDeck() -> None:
         return subs
 
     def onSubsSuccess(subs: list[str]):
-        builder.build(subs, deckname)
+        builder.build(subs, deckname, import_settings.update_freq)
 
     op = QueryOp(
         parent=mw, op=lambda col: getSubs(col, import_settings), success=onSubsSuccess
@@ -155,25 +155,30 @@ def updateNotes() -> None:
                 logger.log(9, f"Note to update: {note.fields}")
 
                 index = "term"
-                if index in note:
-                    note_log = [f"\n{note[index]}"]
-                    if note[index] in builder.entrystore:
-                        entry = builder.entrystore[note[index]]
-                        for field_key, field_val in dataclasses.asdict(entry).items():
-                            if field_key in note and note[field_key] != field_val:
-                                note[field_key] = field_val
-                                note_log.append(
-                                    " - "
-                                    + _('field "{field_key}" updated').format(
-                                        field_key=field_key
-                                    )
+                if index not in note:
+                    continue
+                note_log = [f"\n{note[index]}"]
+                if note[index] not in builder.entrystore:
+                    note_log.append(" - " + _("term not found in dictionary"))
+                else:
+                    entry = builder.entrystore[note[index]]
+                    for field_key, field_val in dataclasses.asdict(entry).items():
+                        if (
+                            field_key in note
+                            and note[field_key] != field_val
+                            and field_key != "frequency"
+                        ):
+                            note[field_key] = field_val
+                            note_log.append(
+                                " - "
+                                + _('field "{field_key}" updated').format(
+                                    field_key=field_key
                                 )
-                    else:
-                        note_log.append(" - " + _("term not found in dictionary"))
-                    if len(note_log) > 1:
-                        log.extend(note_log)
+                            )
+                if len(note_log) > 1:
+                    log.extend(note_log)
 
-                    changed_notes.append(note)
+                changed_notes.append(note)
             collection.update_notes(changed_notes)
 
         return collection.merge_undo_entries(undo_entry)

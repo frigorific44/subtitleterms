@@ -27,12 +27,15 @@ class ImportSettings:
     :type deck: str
     :param name:
     :type name: str
+    :param update_freq:
+    :type name: bool
     """
 
     path: pathlib.Path
     subtitle_stream: int
     deck: str
     name: str
+    update_freq: bool
 
 
 class ImportDialog(QDialog, Ui_ImportDialog):
@@ -48,6 +51,7 @@ class ImportDialog(QDialog, Ui_ImportDialog):
         self.deckLabel.setText(_("Deck Name"))
         self.subtitleLabel.setText(_("Subtitle"))
         self.dictionaryLabel.setText(_("Dictionary"))
+        self.frequenciesCheckBox.setText(_("Update Frequencies"))
 
         self.filePushButton.clicked.connect(self.onBrowse)
         self.fileLineEdit.editingFinished.connect(self.onFileEditFinish)
@@ -128,5 +132,9 @@ class ImportDialog(QDialog, Ui_ImportDialog):
         if not deck_name:
             showWarning("Please enter a name.")
             return None
+        # Update Frequencies
+        update_freq = self.frequenciesCheckBox.isChecked()
 
-        return ImportSettings(self.file_path, sub_choice, dict_choice, deck_name)
+        return ImportSettings(
+            self.file_path, sub_choice, dict_choice, deck_name, update_freq
+        )

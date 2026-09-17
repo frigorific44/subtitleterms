@@ -24,10 +24,10 @@ class LangNote(anki.collection.Note):
         self,
         collection: anki.collection.Collection,
         model: anki.collection.NotetypeDict | anki.collection.NotetypeId,
-        fields: list[str],
+        fields: list,
     ):
         super().__init__(collection, model, None)
-        self.fields = fields
+        self.fields = [str(field) for field in fields]
 
 
 class BaseDeck:
@@ -101,7 +101,7 @@ class BaseDeck:
 
         return notetypeid
 
-    def build(self, subs: list[str], deckname: str):
+    def build(self, subs: list[str], deckname: str, update_freq: bool):
         """
         From a list of subtitle lines, constructs a deck.
         """
@@ -116,7 +116,9 @@ class BaseDeck:
             logger.debug(f"Entry count = {len(entries)}")
             for entry in entries:
                 logger.log(9, dataclasses.asdict(entry))
-            self.gather(col, entries, deckname)
+            skipped = self.gather(col, entries, deckname)
+            if update_freq:
+                self.frequencies(col, skipped)
 
             return col.merge_undo_entries(undo_entry)
 
@@ -160,7 +162,12 @@ class BaseDeck:
         """
         return []
 
-    def gather(self, collection: anki.collection.Collection, entries, deckname: str):
+    def gather(
+        self,
+        collection: anki.collection.Collection,
+        entries: list[BaseEntry],
+        deckname: str,
+    ) -> list[BaseEntry]:
         """
         Construct the deck from confirmed terms.
         """
@@ -170,32 +177,50 @@ class BaseDeck:
         result = collection.decks.add_deck(new_deck)
         new_deck_id = anki.collection.DeckId(result.id)
         logger.info(f"Deck added: {new_deck_id}")
-        notes = [
-            LangNote(collection, model_id, list(dataclasses.astuple(entry)))
-            for entry in entries
-        ]
-        # requests = [
-        #     anki.collection.AddNoteRequest(note, new_deck_id)
-        #     for note in notes
-        #     if not note.fields_check()
-        # ]
+
         requests, skipped = [], []
-        for note in notes:
+        for entry in entries:
+            note = LangNote(collection, model_id, list(dataclasses.astuple(entry)))
             if not note.fields_check():
                 requests.append(anki.collection.AddNoteRequest(note, new_deck_id))
             else:
-                skipped.append(note)
+                skipped.append(entry)
 
         result_msg = f"{len(requests)} note"
         result_msg += "s" if len(requests) > 1 else ""
         result_msg += " added"
-        skipped = len(notes) - len(requests)
-        if skipped > 0:
-            result_msg += f", {skipped} note"
-            result_msg += "s" if skipped > 1 else ""
+        if len(skipped) > 0:
+            result_msg += f", {len(skipped)} note"
+            result_msg += "s" if len(skipped) > 1 else ""
             result_msg += " skipped"
         result_msg += "."
         logger.info(result_msg)
 
         collection.add_notes(requests)
         return skipped
+
+    def frequencies(
+        self, collection: anki.collection.Collection, existing: list[BaseEntry]
+    ):
+        changed_notes = []
+        for entry in existing:
+            found = collection.find_notes(
+                f'"term:{entry.term}" AND "note:{self.modelname}"'
+            )
+            if len(found) == 0:
+                logger.error(f"Skipped note not found: {entry}")
+                continue
+
+            if len(found) > 1:
+                logger.warning("Multiple notes found.")
+            for note_id in found:
+                note = collection.get_note(note_id)
+                if "frequency" not in note:
+                    continue
+                try:
+                    frequency = 0 if note["frequency"] == "" else int(note["frequency"])
+                    note["frequency"] = str(frequency + entry.frequency)
+                    changed_notes.append(note)
+                except ValueError:
+                    logger.error(f"Could not convert frequency: {note['frequency']}")
+        collection.update_notes(changed_notes)

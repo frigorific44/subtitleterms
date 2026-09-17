@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-13 21:13-0600\n"
+"POT-Creation-Date: 2026-09-17 03:32-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,16 +61,16 @@ msgstr ""
 msgid "\"{model_name}\" entries refreshed."
 msgstr ""
 
-#: ../src/subtitleterms/actions.py:167
+#: ../src/subtitleterms/actions.py:162
+msgid "term not found in dictionary"
+msgstr ""
+
+#: ../src/subtitleterms/actions.py:174
 #, python-brace-format
 msgid "field \"{field_key}\" updated"
 msgstr ""
 
-#: ../src/subtitleterms/actions.py:172
-msgid "term not found in dictionary"
-msgstr ""
-
-#: ../src/subtitleterms/actions.py:185
+#: ../src/subtitleterms/actions.py:190
 msgid "Notes Updated:"
 msgstr ""
 
@@ -83,22 +83,26 @@ msgid "zh-Hant > en"
 msgstr "Chinese (Traditional) > English"
 
 #. Translate labels.
-#: ../src/subtitleterms/ui/__init__.py:46
+#: ../src/subtitleterms/ui/__init__.py:49
 msgid "File"
 msgstr ""
 
-#: ../src/subtitleterms/ui/__init__.py:47
+#: ../src/subtitleterms/ui/__init__.py:50
 msgid "Browse"
 msgstr ""
 
-#: ../src/subtitleterms/ui/__init__.py:48
+#: ../src/subtitleterms/ui/__init__.py:51
 msgid "Deck Name"
 msgstr ""
 
-#: ../src/subtitleterms/ui/__init__.py:49
+#: ../src/subtitleterms/ui/__init__.py:52
 msgid "Subtitle"
 msgstr ""
 
-#: ../src/subtitleterms/ui/__init__.py:50
+#: ../src/subtitleterms/ui/__init__.py:53
 msgid "Dictionary"
+msgstr ""
+
+#: ../src/subtitleterms/ui/__init__.py:54
+msgid "Update Frequencies"
 msgstr ""
