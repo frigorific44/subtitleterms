@@ -118,7 +118,7 @@ def zh_initialize(char_set) -> dict[str, HanEntry]:
                 other_char = traditional
                 other_class = ".zh-Hant"
             gloss = [
-                h2[span(other_class)[other_char], " ", span[pinyin]],
+                h2(".hide-rcl-f")[span(other_class)[other_char], " ", span[pinyin]],
                 ul[(li[sense] for sense in senses)],
             ]
             intermediate = (key_char, gloss, pinyin)
