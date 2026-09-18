@@ -53,6 +53,10 @@ Depending on the video selected, it can take a long time to extract the subtitle
 
 For text files, `.srt` (SubRip Text) is specifically supported so as to only parse the subtitle text and not the timestamp information for terms to create cards from. Other text files can also be selected, but will be parsed whole as generic text. 
 
+#### Frequencies
+
+The frequency field of a note refers to the number of times it has been encountered when importing cards. When importing, existing notes are also updated with new counts. If you don't wish to update frequencies on import, deselect the 'Update Frequencies' checkbox in the import dialog.
+
 ### Updating
 
 There are two actions under `Tools` in the toolbar: `SubtitleTerms: Update Note Types` and `Subtitle Terms: Update Notes`. 
