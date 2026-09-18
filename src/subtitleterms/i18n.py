@@ -1,5 +1,6 @@
 import gettext
 import pathlib
+
 from anki.lang import current_lang
 
 dirpath = pathlib.Path(__file__).parent.joinpath("locales")

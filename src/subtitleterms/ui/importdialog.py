@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'importdialog.ui'
+# Form implementation generated from reading ui file 'src/subtitleterms/ui/importdialog.ui'
 #
 # Created by: PyQt6 UI code generator 6.10.2
 #
@@ -53,6 +53,10 @@ class Ui_ImportDialog(object):
         self.verticalLayout.addWidget(self.dictionaryComboBox)
         spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout.addItem(spacerItem2)
+        self.frequenciesCheckBox = QtWidgets.QCheckBox(parent=ImportDialog)
+        self.frequenciesCheckBox.setChecked(True)
+        self.frequenciesCheckBox.setObjectName("frequenciesCheckBox")
+        self.verticalLayout.addWidget(self.frequenciesCheckBox)
         self.buttonBox = QtWidgets.QDialogButtonBox(parent=ImportDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
@@ -73,3 +77,4 @@ class Ui_ImportDialog(object):
         self.deckLabel.setText(_translate("ImportDialog", "Deck Name"))
         self.subtitleLabel.setText(_translate("ImportDialog", "Subtitle"))
         self.dictionaryLabel.setText(_translate("ImportDialog", "Dictionary"))
+        self.frequenciesCheckBox.setText(_translate("ImportDialog", "Update Frequencies"))

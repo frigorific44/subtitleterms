@@ -1,8 +1,9 @@
 import itertools
-import re
-import subprocess
-import shutil
 import pathlib
+import re
+import shutil
+import subprocess
+
 from aqt.addons import AddonManager
 
 logger = AddonManager.get_logger("subtitleterms")
@@ -26,7 +27,10 @@ def get_subtitle_streams(input_path: pathlib.Path) -> dict:
         "csv=p=0",
         input_path,
     ]
-    probe_p = subprocess.run(probe_args, encoding="utf-8", capture_output=True)
+    # TODO: Decide what to do with check.
+    probe_p = subprocess.run(
+        probe_args, check=True, encoding="utf-8", capture_output=True
+    )
     # ffprobe does not respect argument order,
     # but the output ordering is hoped to be stable.
     sub_stream_dict = {
@@ -54,7 +58,8 @@ def ext(input_path: pathlib.Path, stream_n: int) -> str:
         "srt",
         "-",
     ]
-    ff_p = subprocess.run(ff_args, encoding="utf-8", capture_output=True)
+    # TODO: Decide what to do with check.
+    ff_p = subprocess.run(ff_args, check=True, encoding="utf-8", capture_output=True)
     return ff_p.stdout
 
 

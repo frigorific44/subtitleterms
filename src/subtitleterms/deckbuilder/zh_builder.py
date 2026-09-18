@@ -13,7 +13,7 @@ from .base import BaseDeck, BaseEntry
 
 logger = AddonManager.get_logger("subtitleterms")
 
-tones = ["\u0304", "\u0301", "\u030c", "\u0300", "\u200b"]
+tones = ["\u0304", "\u0301", "\u030c", "\u0300", ""]
 
 
 @dataclasses.dataclass
@@ -39,15 +39,14 @@ class ZH_Deck(BaseDeck):
         return HanEntry
 
     def segment(self, subs: list[str]) -> list[str]:
-        word_set = dict()
+        word_set = {}
         for sub in subs:
             for term, tag in jieba.posseg.cut(sub):
-                if tag not in set(["x"]) and not term.isdigit():
-                    if term not in word_set:
-                        word_set[term] = True
+                if tag not in {"x"} and not term.isdigit() and term not in word_set:
+                    word_set[term] = True
         return list(word_set)
 
-    def lookup_fallback(self, term: str):
+    def lookup_fallback(self, term: str) -> list[str]:
         # Calculate combinations of substrings contained in the dictionary.
         def defined_combinations(runes: str) -> list[list[str]]:
             if runes == "":
@@ -119,7 +118,7 @@ def zh_initialize(char_set) -> dict[str, HanEntry]:
                 other_char = traditional
                 other_class = ".zh-Hant"
             gloss = [
-                h2[span(other_class)[other_char], " ", span[pinyin]],
+                h2(".hide-rcl-f")[span(other_class)[other_char], " ", span[pinyin]],
                 ul[(li[sense] for sense in senses)],
             ]
             intermediate = (key_char, gloss, pinyin)
@@ -173,4 +172,4 @@ def reconcile_entries(intermediaries: list[tuple[str, list[Element], str]]) -> H
         gloss = str(div[intermediaries[0][1][1]])
     else:
         gloss = str(div[[intermediary[1] for intermediary in intermediaries]])
-    return HanEntry(intermediaries[0][0], gloss, all_pinyin)
+    return HanEntry(intermediaries[0][0], gloss, 1, all_pinyin)
