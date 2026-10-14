@@ -1,6 +1,6 @@
 [project]
 name = "subtitleterms"
-version = "0.3.0"
+version = "0.3.1"
 description = "Anki plug-in to extract and convert subtitles into usable notes for language-learning."
 readme = "README.md"
 authors = [{ name = "Derek Enlow", email = "derekenlow@gmail.com" }]

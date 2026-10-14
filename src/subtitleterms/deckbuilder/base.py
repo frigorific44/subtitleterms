@@ -24,10 +24,11 @@ class LangNote(anki.collection.Note):
         self,
         collection: anki.collection.Collection,
         model: anki.collection.NotetypeDict | anki.collection.NotetypeId,
-        fields: list,
+        fields: dict,
     ):
         super().__init__(collection, model, None)
-        self.fields = [str(field) for field in fields]
+        for k, v in fields.items():
+            self[k] = str(v)
 
 
 class BaseDeck:
@@ -180,7 +181,7 @@ class BaseDeck:
 
         requests, skipped = [], []
         for entry in entries:
-            note = LangNote(collection, model_id, list(dataclasses.astuple(entry)))
+            note = LangNote(collection, model_id, dataclasses.asdict(entry))
             if not note.fields_check():
                 requests.append(anki.collection.AddNoteRequest(note, new_deck_id))
             else:
